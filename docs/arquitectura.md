@@ -39,7 +39,7 @@ La aplicación deberá permitir:
 
 ### Administradores
 
-* Registrarse e iniciar sesión.
+* Iniciar sesión con una cuenta aprovisionada manualmente.
 * Crear torneos.
 * Editar torneos antes de su inicio.
 * Eliminar torneos antes de su inicio.
@@ -47,6 +47,8 @@ La aplicación deberá permitir:
 * Editar partidos antes de su inicio.
 * Eliminar partidos antes de su inicio.
 * Registrar el resultado oficial de los partidos finalizados.
+
+Las cuentas administrativas no podrán crearse mediante el registro público. Su aprovisionamiento requerirá crear manualmente la identidad en Supabase Authentication y el perfil correspondiente en la tabla de usuarios con rol `ADMIN`.
 
 ### Usuarios
 
@@ -63,6 +65,8 @@ La aplicación deberá permitir:
 * Calcular automáticamente los puntajes cuando exista un resultado oficial.
 * Mantener una tabla de posiciones independiente para cada torneo.
 * Garantizar que las reglas del negocio no puedan ser vulneradas desde el cliente.
+* Considerar participante de un torneo a todo usuario que haya guardado al menos un pronóstico para uno de sus partidos.
+* Impedir la modificación o eliminación de un resultado oficial una vez registrado.
 
 ---
 
@@ -728,6 +732,8 @@ Responsabilidades:
 * inicio de sesión;
 * cierre de sesión.
 
+El registro público creará exclusivamente usuarios con rol `USER`. Las cuentas con rol `ADMIN` serán aprovisionadas manualmente en Supabase Authentication y en la tabla de usuarios.
+
 ### Torneos
 
 Responsabilidades:
@@ -788,6 +794,14 @@ Cuando un administrador publique un resultado oficial se ejecutará una Server A
 
 De esta manera se garantiza que el ranking siempre refleje los resultados oficiales.
 
+Antes de registrar el resultado, la Server Action verificará que el partido no posea ya un resultado oficial. Una vez publicado, el resultado será inmutable y no existirá una operación para editarlo o eliminarlo.
+
+El cálculo aplicará las siguientes reglas:
+
+* 0 puntos si no se acierta el ganador ni el empate;
+* 3 puntos si se acierta el ganador o el empate, pero no el marcador exacto;
+* 6 puntos si se acierta el marcador exacto.
+
 ---
 
 ## Servicios del Dominio
@@ -823,7 +837,7 @@ Por ejemplo, el cálculo de puntos no debería implementarse directamente dentro
 | Eliminar partido            | Server Action        |
 | Registrar pronóstico        | Server Action        |
 | Editar pronóstico            | Server Action        |
-| Actualizar resultado del partido | Server Action        |
+| Registrar resultado del partido  | Server Action        |
 | Calcular puntos             | Servicio del dominio |
 | Actualizar ranking          | Servicio del dominio |
 | Validar permisos            | Server Action        |
@@ -862,7 +876,7 @@ Cada entidad representa un concepto propio del dominio del negocio.
 
 Representa a las personas que utilizan la aplicación.
 
-Un usuario puede participar en múltiples torneos y realizar pronósticos sobre distintos partidos.
+Un usuario puede participar en múltiples torneos y realizar pronósticos sobre distintos partidos. La participación comienza al guardar su primer pronóstico para un partido del torneo y no requiere una entidad ni un proceso de inscripción independiente.
 
 ### Campos principales
 
@@ -901,7 +915,7 @@ Cada torneo constituye una competencia aislada.
 
 * Un torneo contiene muchos partidos.
 * Un torneo posee muchos puntajes.
-* Un torneo posee muchos participantes.
+* Un torneo posee muchos participantes, derivados de los usuarios que registraron al menos un pronóstico para sus partidos.
 
 ---
 
@@ -999,6 +1013,8 @@ Esta entidad evita recalcular continuamente todos los pronósticos para generar 
 
 La combinación usuario–torneo debe ser única.
 
+El registro de Puntaje por Torneo se creará al guardar el primer pronóstico del usuario dentro del torneo, con un puntaje inicial de cero. De esta forma, el mismo registro representa su participación y permite incluirlo en la clasificación antes de que se publiquen resultados.
+
 ---
 
 ## Modelo Conceptual
@@ -1032,6 +1048,8 @@ El rol se modelará como un atributo de la entidad **Usuario**, utilizando un ti
 Dado que el sistema únicamente contempla dos perfiles de usuario y no se prevé la incorporación de nuevos roles en el MVP, modelarlo como una entidad independiente añadiría complejidad sin aportar beneficios significativos.
 
 Esta decisión simplifica tanto el modelo de datos como la implementación de la autorización.
+
+El formulario de registro público asignará siempre el rol `USER` y no aceptará el rol enviado por el cliente. Para crear un administrador será necesario aprovisionar manualmente su identidad en Supabase Authentication y su perfil con rol `ADMIN`; insertar únicamente el perfil no sería suficiente para que pueda autenticarse.
 
 ---
 
@@ -1104,7 +1122,8 @@ Este flujo resume la interacción principal entre usuarios, administradores y el
 4. El cliente envía la información mediante una Server Action.
 5. El servidor verifica que el partido aún no haya comenzado.
 6. El pronóstico se almacena en la base de datos.
-7. El usuario recibe una confirmación de la operación.
+7. Si es el primer pronóstico del usuario en ese torneo, se crea su registro de Puntaje por Torneo con cero puntos.
+8. El usuario recibe una confirmación de la operación.
 
 ---
 
@@ -1113,11 +1132,12 @@ Este flujo resume la interacción principal entre usuarios, administradores y el
 1. El administrador selecciona un partido finalizado.
 2. Ingresa el resultado oficial.
 3. El servidor valida que el usuario tenga permisos de administrador.
-4. Se actualiza el partido con el resultado oficial.
-5. Se recuperan todos los pronósticos correspondientes al partido.
-6. Se calcula el puntaje obtenido por cada participante.
-7. Se actualizan los registros de Puntaje por Torneo.
-8. La tabla de posiciones refleja automáticamente los nuevos puntajes.
+4. El servidor verifica que el partido aún no tenga un resultado oficial registrado.
+5. Se actualiza el partido con el resultado oficial y este queda bloqueado de forma permanente.
+6. Se recuperan todos los pronósticos correspondientes al partido.
+7. Se calcula el puntaje obtenido por cada participante aplicando las reglas de 0, 3 o 6 puntos.
+8. Se actualizan los registros de Puntaje por Torneo.
+9. La tabla de posiciones refleja automáticamente los nuevos puntajes.
 
 ---
 
@@ -1144,8 +1164,9 @@ Las responsabilidades incluyen:
 * registro de usuarios;
 * inicio de sesión;
 * cierre de sesión;
-* administración de sesiones;
-* recuperación de contraseña.
+* administración de sesiones.
+
+La recuperación de contraseña no forma parte del MVP. El registro público solo permitirá crear cuentas con rol `USER`; las cuentas administrativas se aprovisionarán manualmente tanto en Supabase Authentication como en la tabla de usuarios.
 
 Las credenciales nunca serán almacenadas ni procesadas directamente por la aplicación.
 
@@ -1166,6 +1187,7 @@ Por ejemplo:
 
 * solo un administrador puede crear torneos;
 * solo un administrador puede registrar resultados oficiales;
+* ningún usuario, incluido un administrador, puede modificar o eliminar un resultado oficial ya registrado;
 * un usuario común solo puede modificar sus propios pronósticos.
 
 La interfaz podrá ocultar opciones según el rol del usuario, pero esta medida tiene únicamente fines de experiencia de usuario y no reemplaza las validaciones del servidor.
