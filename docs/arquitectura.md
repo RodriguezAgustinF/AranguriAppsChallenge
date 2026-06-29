@@ -1,14 +1,23 @@
-# ARCHITECTURE.md
-
-# Arquitectura de Software
+# Arquitectura de software
 
 ## Proyecto: Prode de Fútbol
 
+Este documento presenta la visión general y funciona como punto de entrada a la documentación técnica del proyecto.
+
+## Documentos relacionados
+
+* [Dominio y flujos](./dominio-y-flujos.md): reglas del torneo, llave, estados, fechas, puntuación y flujos.
+* [Datos y seguridad](./datos-y-seguridad.md): backend, modelo relacional, autenticación, RLS y transacciones.
+* [Decisiones arquitectónicas](./decisiones-arquitectonicas.md): escalabilidad, buenas prácticas y ADR.
+* [Alcance funcional](./alcance-funcional.md): funcionalidades y reglas visibles del producto.
+* [Lista de tareas](./lista-de-tareas.md): backlog ordenado del MVP.
+* [Registro de decisiones](./registro-de-decisiones.md): historial cronológico de decisiones y rectificaciones.
+
 ---
 
-# 1. Objetivo del Proyecto
+## Objetivo del proyecto
 
-## Descripción General
+### Descripción General
 
 El objetivo del proyecto es desarrollar una aplicación web que permita organizar torneos de pronósticos deportivos ("Prode") sobre partidos de fútbol.
 
@@ -17,7 +26,7 @@ La aplicación contará con dos perfiles de usuario:
 * **Administrador**, responsable de la gestión de los torneos, partidos y resultados oficiales.
 * **Usuario Común**, encargado de realizar pronósticos sobre los resultados de los partidos y competir con otros participantes dentro de cada torneo.
 
-Cada torneo funcionará de manera completamente independiente, manteniendo su propio conjunto de partidos, participantes y tabla de posiciones.
+Cada torneo funcionará de manera completamente independiente, manteniendo sus equipos inscriptos, su llave, sus usuarios participantes y su tabla de posiciones del Prode.
 
 Una vez que un administrador publique el resultado oficial de un partido, el sistema calculará automáticamente el puntaje obtenido por cada participante según la precisión de su pronóstico.
 
@@ -33,24 +42,26 @@ Por este motivo se adopta una arquitectura Full Stack basada en Next.js y Supaba
 
 ---
 
-# Objetivos Funcionales
+### Objetivos funcionales
 
 La aplicación deberá permitir:
 
-### Administradores
+#### Administradores
 
 * Iniciar sesión con una cuenta aprovisionada manualmente.
 * Crear torneos.
 * Editar torneos antes de su inicio.
-* Eliminar torneos antes de su inicio.
-* Crear partidos.
-* Editar partidos antes de su inicio.
-* Eliminar partidos antes de su inicio.
+* Eliminar torneos antes de su inicio y mientras no posean pronósticos.
+* Inscribir equipos y generar aleatoriamente la llave.
+* Crear equipos.
+* Editar equipos que no hayan sido utilizados en partidos iniciados.
+* Eliminar equipos que no estén asociados a partidos.
+* Programar y reprogramar los partidos generados por la llave.
 * Registrar el resultado oficial de los partidos finalizados.
 
 Las cuentas administrativas no podrán crearse mediante el registro público. Su aprovisionamiento requerirá crear manualmente la identidad en Supabase Authentication y el perfil correspondiente en la tabla de usuarios con rol `ADMIN`.
 
-### Usuarios
+#### Usuarios
 
 * Registrarse.
 * Iniciar sesión.
@@ -60,17 +71,19 @@ Las cuentas administrativas no podrán crearse mediante el registro público. Su
 * Modificar pronósticos únicamente antes del inicio del partido.
 * Consultar su puntaje dentro de cada torneo.
 
-### Sistema
+#### Sistema
 
 * Calcular automáticamente los puntajes cuando exista un resultado oficial.
 * Mantener una tabla de posiciones independiente para cada torneo.
 * Garantizar que las reglas del negocio no puedan ser vulneradas desde el cliente.
 * Considerar participante de un torneo a todo usuario que haya guardado al menos un pronóstico para uno de sus partidos.
 * Impedir la modificación o eliminación de un resultado oficial una vez registrado.
+* Generar una llave de eliminación directa para 4, 8, 16 o 32 equipos.
+* Propagar automáticamente cada ganador al partido siguiente.
 
 ---
 
-# Objetivos No Funcionales
+### Objetivos no funcionales
 
 La solución deberá cumplir los siguientes atributos de calidad:
 
@@ -85,9 +98,9 @@ La solución deberá cumplir los siguientes atributos de calidad:
 
 ---
 
-# 2. Tecnologías Elegidas
+## Tecnologías elegidas
 
-## Next.js (App Router)
+### Next.js (App Router)
 
 Next.js constituye el núcleo de la aplicación.
 
@@ -95,7 +108,7 @@ Permite desarrollar una solución Full Stack utilizando un único proyecto para 
 
 Su App Router ofrece una arquitectura moderna basada en componentes del servidor, rutas anidadas y renderizado híbrido.
 
-### ¿Por qué se eligió?
+#### ¿Por qué se eligió?
 
 * Unifica frontend y backend.
 * Excelente integración con React.
@@ -107,13 +120,13 @@ Su App Router ofrece una arquitectura moderna basada en componentes del servidor
 
 ---
 
-## React
+### React
 
 React será utilizado para construir toda la interfaz de usuario.
 
 Su modelo basado en componentes favorece la reutilización, el mantenimiento y la composición de interfaces complejas.
 
-### Ventajas
+#### Ventajas
 
 * Componentes reutilizables.
 * Gran ecosistema.
@@ -123,11 +136,11 @@ Su modelo basado en componentes favorece la reutilización, el mantenimiento y l
 
 ---
 
-## TypeScript
+### TypeScript
 
 Todo el proyecto será desarrollado utilizando TypeScript en modo estricto.
 
-### Motivos
+#### Motivos
 
 * Tipado estático.
 * Menor cantidad de errores en producción.
@@ -139,11 +152,11 @@ Al tratarse de una aplicación basada en múltiples entidades (usuarios, torneos
 
 ---
 
-## Tailwind CSS
+### Tailwind CSS
 
 Tailwind será utilizado como framework CSS.
 
-### Justificación
+#### Justificación
 
 * Desarrollo rápido.
 * Bajo costo de mantenimiento.
@@ -155,7 +168,7 @@ No se considera necesario incorporar librerías UI pesadas para el alcance del M
 
 ---
 
-## Supabase
+### Supabase
 
 Supabase será utilizado como Backend as a Service (BaaS).
 
@@ -172,11 +185,11 @@ Su integración con Next.js reduce significativamente la complejidad del proyect
 
 ---
 
-## PostgreSQL
+### PostgreSQL
 
 La persistencia de datos estará basada en PostgreSQL administrado por Supabase.
 
-### Motivos
+#### Motivos
 
 * Base de datos relacional.
 * Excelente soporte para integridad referencial.
@@ -189,13 +202,13 @@ El modelo del negocio (usuarios, torneos, equipos, partidos y pronósticos) pose
 
 ---
 
-## Server Actions
+### Server Actions
 
 La lógica de negocio se implementará principalmente mediante Server Actions.
 
 Estas permiten ejecutar código exclusivamente del lado del servidor sin necesidad de construir una API REST tradicional.
 
-### Ventajas
+#### Ventajas
 
 * Menor cantidad de código.
 * Mayor seguridad.
@@ -207,7 +220,7 @@ Las operaciones críticas, como crear torneos, registrar pronósticos o calcular
 
 ---
 
-## Route Handlers
+### Route Handlers
 
 Los Route Handlers se utilizarán únicamente cuando sea necesario exponer endpoints HTTP.
 
@@ -222,11 +235,11 @@ No serán el mecanismo principal para la lógica del negocio.
 
 ---
 
-## Vercel
+### Vercel
 
 La aplicación será desplegada en Vercel.
 
-### Razones
+#### Razones
 
 * Integración nativa con Next.js.
 * Despliegue automático desde GitHub.
@@ -239,7 +252,7 @@ Esta elección reduce considerablemente el esfuerzo operativo del proyecto.
 
 ---
 
-# Resumen Tecnológico
+### Resumen tecnológico
 
 | Tecnología     | Responsabilidad       |
 | -------------- | --------------------- |
@@ -253,9 +266,9 @@ Esta elección reduce considerablemente el esfuerzo operativo del proyecto.
 | Route Handlers | Endpoints específicos |
 | Vercel         | Despliegue            |
 
-# 3. Arquitectura General
+## Arquitectura general
 
-## Visión General
+### Visión General
 
 La aplicación seguirá una arquitectura **Full Stack** basada en Next.js y Supabase.
 
@@ -265,7 +278,7 @@ Las operaciones de negocio se ejecutarán en el servidor mediante **Server Actio
 
 Supabase proporcionará los servicios de autenticación y persistencia utilizando PostgreSQL como motor de base de datos.
 
-## Arquitectura de Alto Nivel
+### Arquitectura de Alto Nivel
 
 ```text
                     ┌──────────────────────┐
@@ -297,9 +310,9 @@ Supabase proporcionará los servicios de autenticación y persistencia utilizand
                     └──────────────────────┘
 ```
 
-## Responsabilidades de cada capa
+### Responsabilidades de cada capa
 
-### Cliente (React)
+#### Cliente (React)
 
 Responsabilidades:
 
@@ -313,7 +326,7 @@ El cliente **no contiene reglas críticas del negocio**. Las validaciones del la
 
 ---
 
-### Next.js (App Router)
+#### Next.js (App Router)
 
 Representa el núcleo de la aplicación.
 
@@ -329,7 +342,7 @@ Además, organiza el proyecto utilizando una estructura modular basada en funcio
 
 ---
 
-### Server Actions
+#### Server Actions
 
 Constituyen la principal capa de lógica de negocio.
 
@@ -346,7 +359,7 @@ Al ejecutarse exclusivamente en el servidor, reducen la superficie de ataque y e
 
 ---
 
-### Route Handlers
+#### Route Handlers
 
 Se utilizarán únicamente cuando sea necesario exponer un endpoint HTTP.
 
@@ -361,7 +374,7 @@ En el MVP no se espera un uso intensivo de esta capa.
 
 ---
 
-### Supabase
+#### Supabase
 
 Supabase actúa como plataforma backend administrada.
 
@@ -376,7 +389,7 @@ No se utilizará Storage en el MVP, ya que la aplicación no requiere carga de a
 
 ---
 
-### PostgreSQL
+#### PostgreSQL
 
 Es la fuente única de verdad del sistema.
 
@@ -392,11 +405,11 @@ Toda la información crítica se almacena en PostgreSQL, garantizando consistenc
 
 ---
 
-## Principios Arquitectónicos
+### Principios Arquitectónicos
 
 La arquitectura se basa en los siguientes principios:
 
-### Separación de responsabilidades
+#### Separación de responsabilidades
 
 Cada capa posee responsabilidades claramente definidas.
 
@@ -406,13 +419,13 @@ Cada capa posee responsabilidades claramente definidas.
 
 Esta separación facilita el mantenimiento y las pruebas.
 
-### Single Source of Truth
+#### Single Source of Truth
 
 La base de datos representa la única fuente válida de información.
 
 El cliente nunca debe asumir que posee el estado correcto; toda operación crítica debe confirmarse contra el servidor.
 
-### Server First
+#### Server First
 
 Las reglas de negocio residen en el servidor.
 
@@ -424,7 +437,7 @@ Esto incluye operaciones como:
 * cálculo de puntajes;
 * validación de permisos.
 
-### Simplicidad
+#### Simplicidad
 
 Se evita incorporar componentes arquitectónicos innecesarios como:
 
@@ -439,9 +452,9 @@ Estas decisiones mantienen el proyecto liviano y fácil de evolucionar.
 
 ---
 
-# 4. Arquitectura del Frontend
+## Arquitectura del frontend
 
-## Enfoque basado en Features
+### Enfoque basado en Features
 
 La aplicación adoptará una organización basada en **features** (funcionalidades del negocio), en lugar de una estructura puramente técnica.
 
@@ -455,7 +468,7 @@ Este enfoque favorece:
 
 Cada feature encapsula sus componentes, lógica y tipos relacionados.
 
-## Estructura de Carpetas
+### Estructura de Carpetas
 
 ```text
 src/
@@ -481,7 +494,7 @@ src/
 └── middleware.ts
 ```
 
-### app/
+#### app/
 
 Contiene la definición de rutas mediante el App Router.
 
@@ -503,7 +516,7 @@ Cada carpeta representa una ruta accesible por el usuario.
 
 ---
 
-### actions/
+#### actions/
 
 Agrupa todas las Server Actions del proyecto.
 
@@ -523,7 +536,7 @@ Cada acción representa una operación de negocio ejecutada en el servidor.
 
 ---
 
-### components/
+#### components/
 
 Incluye componentes reutilizables y desacoplados de una funcionalidad específica.
 
@@ -544,7 +557,7 @@ Estos componentes conforman el sistema de diseño de la aplicación.
 
 ---
 
-### features/
+#### features/
 
 Representa el corazón de la aplicación.
 
@@ -577,7 +590,7 @@ Este enfoque reduce el acoplamiento y facilita el mantenimiento.
 
 ---
 
-### hooks/
+#### hooks/
 
 Contiene hooks reutilizables.
 
@@ -592,7 +605,7 @@ Los hooks no deben contener reglas críticas de negocio.
 
 ---
 
-### lib/
+#### lib/
 
 Agrupa configuraciones compartidas.
 
@@ -605,7 +618,7 @@ Ejemplos:
 
 ---
 
-### services/
+#### services/
 
 Contiene funciones encargadas de interactuar con servicios externos o encapsular operaciones reutilizables.
 
@@ -619,7 +632,7 @@ Su objetivo es evitar duplicación de lógica entre distintas Server Actions.
 
 ---
 
-### types/
+#### types/
 
 Define los tipos globales de la aplicación.
 
@@ -635,7 +648,7 @@ Centralizar los tipos mejora la consistencia y facilita las refactorizaciones.
 
 ---
 
-### utils/
+#### utils/
 
 Incluye funciones auxiliares sin dependencia del dominio.
 
@@ -648,7 +661,7 @@ Ejemplos:
 
 ---
 
-### middleware.ts
+#### middleware.ts
 
 El middleware se utilizará para proteger rutas que requieren autenticación.
 
@@ -658,7 +671,7 @@ Ejemplos:
 * redirigir usuarios autenticados desde la pantalla de login;
 * validar sesiones activas.
 
-## Organización de Componentes
+### Organización de Componentes
 
 Se promoverá una jerarquía clara de componentes:
 
@@ -668,831 +681,9 @@ Se promoverá una jerarquía clara de componentes:
 
 Esta separación mejora la reutilización y facilita el mantenimiento del código.
 
-# 5. Arquitectura Backend
+## Alcance
 
-## Enfoque General
-
-La aplicación no contará con un backend independiente. En su lugar, la lógica del servidor se implementará utilizando las capacidades Full Stack de Next.js, principalmente mediante **Server Actions**, complementadas por **Route Handlers** cuando sea necesario exponer endpoints HTTP.
-
-Este enfoque permite reducir la complejidad del proyecto al eliminar la necesidad de mantener una API REST separada, disminuyendo el esfuerzo de desarrollo y operación sin sacrificar mantenibilidad.
-
-La arquitectura backend se organiza en tres capas principales:
-
-```text
-Cliente
-        │
-        ▼
-Server Actions / Route Handlers
-        │
-        ▼
-Servicios del dominio
-        │
-        ▼
-Supabase (PostgreSQL)
-```
-
-Cada capa posee responsabilidades bien definidas para mantener una adecuada separación de responsabilidades.
-
----
-
-## Responsabilidades del Cliente
-
-El cliente únicamente será responsable de:
-
-* capturar la interacción del usuario;
-* mostrar información;
-* realizar validaciones básicas de formularios;
-* invocar Server Actions.
-
-No contendrá reglas de negocio críticas, ya que cualquier validación realizada en el navegador puede ser modificada o eludida por un usuario malintencionado.
-
----
-
-## Responsabilidades de las Server Actions
-
-Las Server Actions constituyen la principal capa de negocio de la aplicación.
-
-Entre sus responsabilidades se encuentran:
-
-* validar autenticación;
-* validar autorización;
-* verificar reglas del negocio;
-* consultar datos;
-* modificar datos;
-* ejecutar cálculos;
-* devolver resultados al cliente.
-
-Cada operación importante del sistema se implementará mediante una Server Action específica.
-
-### Autenticación
-
-Responsabilidades:
-
-* registro de usuarios;
-* inicio de sesión;
-* cierre de sesión.
-
-El registro público creará exclusivamente usuarios con rol `USER`. Las cuentas con rol `ADMIN` serán aprovisionadas manualmente en Supabase Authentication y en la tabla de usuarios.
-
-### Torneos
-
-Responsabilidades:
-
-* crear torneo;
-* actualizar torneo;
-* eliminar torneo;
-* obtener información del torneo.
-
-Antes de modificar un torneo deberán verificarse reglas como:
-
-* que el usuario sea administrador;
-* que el torneo aún no haya comenzado.
-
----
-
-### Partidos
-
-Responsabilidades:
-
-* crear partido;
-* editar partido;
-* eliminar partido;
-* obtener partidos de un torneo.
-
-Antes de modificar un partido se validará:
-
-* rol del usuario;
-* fecha de inicio del partido.
-
----
-
-### Pronósticos
-
-Responsabilidades:
-
-* registrar pronóstico;
-* modificar pronóstico;
-* consultar pronósticos del usuario.
-
-La Server Action verificará siempre que el partido no haya comenzado.
-
-La decisión nunca dependerá del reloj del navegador.
-
-La comparación se realizará utilizando la fecha almacenada en la base de datos y el horario del servidor.
-
----
-
-### Resultados Oficiales
-
-Cuando un administrador publique un resultado oficial se ejecutará una Server Action encargada de:
-
-1. validar permisos;
-2. actualizar los goles del partido y marcarlo como finalizado.
-3. recuperar todos los pronósticos correspondientes al partido;
-4. calcular el puntaje obtenido por cada participante;
-5. actualizar la tabla de posiciones del torneo.
-
-De esta manera se garantiza que el ranking siempre refleje los resultados oficiales.
-
-Antes de registrar el resultado, la Server Action verificará que el partido no posea ya un resultado oficial. Una vez publicado, el resultado será inmutable y no existirá una operación para editarlo o eliminarlo.
-
-El cálculo aplicará las siguientes reglas:
-
-* 0 puntos si no se acierta el ganador ni el empate;
-* 3 puntos si se acierta el ganador o el empate, pero no el marcador exacto;
-* 6 puntos si se acierta el marcador exacto.
-
----
-
-## Servicios del Dominio
-
-Aunque el proyecto no contará con una arquitectura en capas tradicional, resulta conveniente encapsular determinadas operaciones reutilizables dentro de servicios del dominio.
-
-Ejemplos:
-
-```text
-services/
-
-calculatePoints.ts
-rankingService.ts
-tournamentService.ts
-predictionService.ts
-```
-
-Estos servicios contienen lógica reutilizable, mientras que las Server Actions coordinan el flujo de ejecución.
-
-Por ejemplo, el cálculo de puntos no debería implementarse directamente dentro de la Server Action, ya que podría reutilizarse en distintos escenarios futuros.
-
----
-
-## Distribución de la Lógica de Negocio
-
-| Regla                       | Ubicación            |
-| --------------------------- | -------------------- |
-| Crear torneo                | Server Action        |
-| Editar torneo               | Server Action        |
-| Eliminar torneo             | Server Action        |
-| Crear partido               | Server Action        |
-| Editar partido              | Server Action        |
-| Eliminar partido            | Server Action        |
-| Registrar pronóstico        | Server Action        |
-| Editar pronóstico            | Server Action        |
-| Registrar resultado del partido  | Server Action        |
-| Calcular puntos             | Servicio del dominio |
-| Actualizar ranking          | Servicio del dominio |
-| Validar permisos            | Server Action        |
-| Validar fechas              | Server Action        |
-
----
-
-## Acceso a la Base de Datos
-
-Toda interacción con PostgreSQL se realizará mediante el cliente oficial de Supabase.
-
-Las consultas se mantendrán lo más simples posible, delegando la lógica de negocio al servidor.
-
-Este enfoque evita concentrar reglas complejas en la base de datos y favorece una mayor legibilidad del código.
-
----
-
-# 6. Base de Datos
-
-## Principios de Diseño
-
-El modelo de datos sigue un enfoque relacional, aprovechando las capacidades de PostgreSQL para garantizar:
-
-* integridad referencial;
-* consistencia;
-* normalización;
-* facilidad de consulta.
-
-Cada entidad representa un concepto propio del dominio del negocio.
-
----
-
-## Usuario
-
-### Propósito
-
-Representa a las personas que utilizan la aplicación.
-
-Un usuario puede participar en múltiples torneos y realizar pronósticos sobre distintos partidos. La participación comienza al guardar su primer pronóstico para un partido del torneo y no requiere una entidad ni un proceso de inscripción independiente.
-
-### Campos principales
-
-* id
-* nombre
-* email
-* rol
-* createdAt
-
-### Relaciones
-
-* Un usuario puede registrar muchos pronósticos.
-* Un usuario posee un puntaje por cada torneo en el que participa.
-
----
-
-## Torneo
-
-### Propósito
-
-Agrupa un conjunto de partidos y mantiene una clasificación independiente de participantes.
-
-Cada torneo constituye una competencia aislada.
-
-### Campos principales
-
-* id
-* nombre
-* descripción
-* fechaInicio
-* fechaFin
-* estado
-* createdAt
-
-### Relaciones
-
-* Un torneo contiene muchos partidos.
-* Un torneo posee muchos puntajes.
-* Un torneo posee muchos participantes, derivados de los usuarios que registraron al menos un pronóstico para sus partidos.
-
----
-
-## Equipo
-
-### Propósito
-
-Representa un equipo de fútbol participante.
-
-La entidad evita duplicar información de los equipos en múltiples partidos.
-
-### Campos principales
-
-* id
-* nombre
-* abreviatura
-* escudo (opcional)
-
-### Relaciones
-
-Un equipo participa en muchos partidos.
-
----
-
-## Partido
-
-### Propósito
-
-Representa un encuentro deportivo entre dos equipos perteneciente a un torneo.
-
-### Campos principales
-
-* id
-* torneoId
-* equipoLocalId
-* equipoVisitanteId
-* fechaHora
-* estado
-* golesLocal (nullable)
-* golesVisitante (nullable)
-* resultadoPublicadoEn (nullable)
-
-### Relaciones
-
-* Pertenece a un torneo.
-* Posee dos equipos.
-* Posee múltiples pronósticos.
-
----
-
-## Pronóstico
-
-### Propósito
-
-Almacena la predicción realizada por un usuario para un partido determinado.
-
-### Campos principales
-
-* id
-* usuarioId
-* partidoId
-* golesLocal
-* golesVisitante
-* createdAt
-
-### Relaciones
-
-* Pertenece a un usuario.
-* Pertenece a un partido.
-
-Debe existir un único pronóstico por usuario y partido.
-
-
----
-
-## Puntaje por Torneo
-
-### Propósito
-
-Almacena la cantidad de puntos acumulados por un usuario dentro de un torneo.
-
-Esta entidad evita recalcular continuamente todos los pronósticos para generar la tabla de posiciones.
-
-### Campos principales
-
-* id
-* usuarioId
-* torneoId
-* puntos
-
-### Relaciones
-
-* Pertenece a un usuario.
-* Pertenece a un torneo.
-
-La combinación usuario–torneo debe ser única.
-
-El registro de Puntaje por Torneo se creará al guardar el primer pronóstico del usuario dentro del torneo, con un puntaje inicial de cero. De esta forma, el mismo registro representa su participación y permite incluirlo en la clasificación antes de que se publiquen resultados.
-
----
-
-## Modelo Conceptual
-
-```text
-                    Usuario
-                       │
-        ┌──────────────┴──────────────┐
-        │                             │
-        ▼                             ▼
-   Pronóstico                  PuntajeTorneo
-        │                             │
-        ▼                             ▼
-      Partido ─────────────► Torneo
-        │
-        │
- ┌──────┴────────┐
- ▼               ▼
-Equipo       Equipo
-(Local)     (Visitante)
-```
-
----
-
-## Consideraciones de Modelado
-
-### Rol de Usuario
-
-El rol se modelará como un atributo de la entidad **Usuario**, utilizando un tipo enumerado (`ADMIN` o `USER`).
-
-Dado que el sistema únicamente contempla dos perfiles de usuario y no se prevé la incorporación de nuevos roles en el MVP, modelarlo como una entidad independiente añadiría complejidad sin aportar beneficios significativos.
-
-Esta decisión simplifica tanto el modelo de datos como la implementación de la autorización.
-
-El formulario de registro público asignará siempre el rol `USER` y no aceptará el rol enviado por el cliente. Para crear un administrador será necesario aprovisionar manualmente su identidad en Supabase Authentication y su perfil con rol `ADMIN`; insertar únicamente el perfil no sería suficiente para que pueda autenticarse.
-
----
-
-### Puntajes Materializados
-
-Aunque el puntaje de un usuario podría calcularse recorriendo todos sus pronósticos, se opta por persistir el total en la entidad **Puntaje por Torneo**.
-
-Esta decisión reduce el costo de las consultas del ranking y mejora el rendimiento, especialmente a medida que aumenta la cantidad de partidos y participantes.
-
-La consistencia se garantiza actualizando estos registros inmediatamente después de registrar un resultado oficial.
-
-
-# 7. Flujo de la Aplicación
-
-## Flujo General
-
-El siguiente diagrama representa el recorrido típico de un usuario dentro de la aplicación.
-
-```text
-Registro
-    │
-    ▼
-Inicio de sesión
-    │
-    ▼
-Visualizar torneos
-    │
-    ▼
-Seleccionar torneo
-    │
-    ▼
-Consultar partidos
-    │
-    ▼
-Registrar pronósticos
-    │
-    ▼
-Esperar resultados oficiales
-    │
-    ▼
-Administrador publica resultado
-    │
-    ▼
-Servidor calcula puntajes
-    │
-    ▼
-Actualizar tabla de posiciones
-```
-
-Este flujo resume la interacción principal entre usuarios, administradores y el sistema.
-
----
-
-## Flujo de Registro
-
-1. El usuario completa el formulario de registro.
-2. La información se envía a una Server Action.
-3. Se validan los datos recibidos.
-4. Supabase Authentication crea la cuenta.
-5. Se crea el perfil del usuario en la base de datos.
-6. El usuario inicia sesión automáticamente o es redirigido al formulario de autenticación, según la configuración adoptada.
-
----
-
-## Flujo de Pronóstico
-
-1. El usuario selecciona un torneo.
-2. Consulta los partidos disponibles.
-3. Ingresa el resultado esperado para cada partido.
-4. El cliente envía la información mediante una Server Action.
-5. El servidor verifica que el partido aún no haya comenzado.
-6. El pronóstico se almacena en la base de datos.
-7. Si es el primer pronóstico del usuario en ese torneo, se crea su registro de Puntaje por Torneo con cero puntos.
-8. El usuario recibe una confirmación de la operación.
-
----
-
-## Flujo de Publicación de Resultados
-
-1. El administrador selecciona un partido finalizado.
-2. Ingresa el resultado oficial.
-3. El servidor valida que el usuario tenga permisos de administrador.
-4. El servidor verifica que el partido aún no tenga un resultado oficial registrado.
-5. Se actualiza el partido con el resultado oficial y este queda bloqueado de forma permanente.
-6. Se recuperan todos los pronósticos correspondientes al partido.
-7. Se calcula el puntaje obtenido por cada participante aplicando las reglas de 0, 3 o 6 puntos.
-8. Se actualizan los registros de Puntaje por Torneo.
-9. La tabla de posiciones refleja automáticamente los nuevos puntajes.
-
----
-
-## Flujo de Consulta del Ranking
-
-1. El usuario accede al torneo.
-2. El servidor consulta la tabla de Puntaje por Torneo.
-3. Los resultados se ordenan por cantidad de puntos.
-4. Se devuelve la clasificación al cliente.
-5. La interfaz presenta la tabla de posiciones actualizada.
-
----
-
-# 8. Seguridad
-
-La seguridad constituye un aspecto central de la arquitectura y se implementa en múltiples niveles para proteger tanto la información como las reglas del negocio.
-
-## Autenticación
-
-La autenticación será gestionada mediante Supabase Authentication.
-
-Las responsabilidades incluyen:
-
-* registro de usuarios;
-* inicio de sesión;
-* cierre de sesión;
-* administración de sesiones.
-
-La recuperación de contraseña no forma parte del MVP. El registro público solo permitirá crear cuentas con rol `USER`; las cuentas administrativas se aprovisionarán manualmente tanto en Supabase Authentication como en la tabla de usuarios.
-
-Las credenciales nunca serán almacenadas ni procesadas directamente por la aplicación.
-
----
-
-## Autorización
-
-La autorización determina qué acciones puede realizar cada usuario.
-
-El sistema distingue dos roles:
-
-* **ADMIN**
-* **USER**
-
-Las verificaciones de permisos se realizarán exclusivamente en el servidor.
-
-Por ejemplo:
-
-* solo un administrador puede crear torneos;
-* solo un administrador puede registrar resultados oficiales;
-* ningún usuario, incluido un administrador, puede modificar o eliminar un resultado oficial ya registrado;
-* un usuario común solo puede modificar sus propios pronósticos.
-
-La interfaz podrá ocultar opciones según el rol del usuario, pero esta medida tiene únicamente fines de experiencia de usuario y no reemplaza las validaciones del servidor.
-
----
-
-## Row Level Security (RLS)
-
-Se utilizará Row Level Security (RLS) de Supabase para reforzar el control de acceso a los datos.
-
-Las políticas permitirán garantizar que cada usuario únicamente pueda acceder a la información que le corresponde.
-
-Ejemplos:
-
-* un usuario solo podrá consultar y modificar sus propios pronósticos;
-* un usuario no podrá alterar el puntaje de otro participante;
-* las operaciones administrativas estarán restringidas a usuarios con rol ADMIN.
-
-El uso de RLS agrega una capa adicional de seguridad incluso si un cliente intenta acceder directamente a la base de datos mediante el SDK de Supabase.
-
----
-
-## Validaciones del Lado del Servidor
-
-Todas las reglas críticas del negocio serán verificadas mediante Server Actions antes de modificar la base de datos.
-
-Entre ellas:
-
-* verificar autenticación;
-* verificar autorización;
-* validar existencia de entidades;
-* comprobar que un torneo no haya comenzado;
-* comprobar que un partido no haya iniciado;
-* impedir que usuarios no autorizados actualicen el resultado de un partido.
-* evitar pronósticos duplicados para un mismo partido.
-
-Estas validaciones son obligatorias, independientemente de las comprobaciones realizadas en el cliente.
-
----
-
-## Protección Contra Manipulación del Cliente
-
-Ninguna decisión de negocio dependerá de información enviada por el navegador sin ser validada.
-
-El servidor será responsable de:
-
-* determinar el usuario autenticado;
-* verificar el rol del usuario;
-* comprobar las fechas de inicio de los partidos;
-* calcular los puntajes;
-* actualizar la clasificación.
-
-Este enfoque evita que un usuario pueda modificar el comportamiento del sistema manipulando el código ejecutado en el navegador.
-
----
-
-# 9. Escalabilidad
-
-Aunque la aplicación se desarrolla como un MVP, la arquitectura permite incorporar nuevas funcionalidades sin necesidad de realizar cambios estructurales significativos.
-
-## Nuevos Deportes
-
-El modelo puede extenderse para soportar otras disciplinas deportivas mediante la incorporación de una entidad que represente el deporte y la adaptación de las reglas de puntaje.
-
----
-
-## Temporadas
-
-Los torneos podrían agruparse en temporadas, permitiendo mantener el historial de competencias y estadísticas entre distintos años.
-
----
-
-## Estadísticas
-
-Podrían incorporarse funcionalidades como:
-
-* porcentaje de aciertos;
-* mejor racha de pronósticos;
-* ranking histórico;
-* cantidad de resultados exactos;
-* evolución del puntaje por fecha.
-
-La estructura actual favorece este tipo de consultas.
-
----
-
-## Notificaciones
-
-La aplicación podría integrar notificaciones por correo electrónico o push para informar a los usuarios sobre:
-
-* inicio de nuevos torneos;
-* cierre del período de pronósticos;
-* publicación de resultados oficiales.
-
----
-
-## Tiempo Real
-
-La incorporación de Supabase Realtime permitiría actualizar automáticamente:
-
-* resultados oficiales;
-* tablas de posiciones;
-* puntajes de los participantes.
-
-De esta manera se eliminaría la necesidad de recargar manualmente la interfaz.
-
----
-
-# 10. Buenas Prácticas
-
-El desarrollo seguirá un conjunto de lineamientos destinados a mantener un código consistente y fácil de mantener.
-
-## TypeScript Estricto
-
-Se utilizará el modo estricto de TypeScript para reducir errores en tiempo de compilación y facilitar las refactorizaciones.
-
----
-
-## Separación de Responsabilidades
-
-Cada módulo tendrá una responsabilidad claramente definida.
-
-* los componentes renderizan información;
-* las Server Actions coordinan operaciones;
-* los servicios encapsulan lógica reutilizable;
-* la base de datos almacena el estado de la aplicación.
-
----
-
-## Componentes Reutilizables
-
-Los componentes compartidos se ubicarán en una carpeta común para evitar duplicación de código y promover una interfaz consistente.
-
----
-
-## Manejo de Errores
-
-Las operaciones críticas deberán manejar errores de forma controlada.
-
-Los mensajes presentados al usuario serán claros y evitarán exponer detalles internos del sistema.
-
-Los errores inesperados podrán registrarse para facilitar su análisis y resolución.
-
----
-
-## Variables de Entorno
-
-Las credenciales y configuraciones sensibles se almacenarán mediante variables de entorno.
-
-No se incluirán secretos directamente en el código fuente.
-
----
-
-## Validaciones
-
-Las validaciones se implementarán en dos niveles:
-
-* cliente, para mejorar la experiencia del usuario;
-* servidor, para garantizar el cumplimiento de las reglas del negocio.
-
----
-
-## Convenciones de Nombres
-
-Se adoptarán convenciones consistentes en todo el proyecto.
-
-Ejemplos:
-
-* Componentes: PascalCase.
-* Hooks: prefijo `use`.
-* Funciones: camelCase.
-* Tipos e interfaces: PascalCase.
-* Constantes: UPPER_SNAKE_CASE.
-* Carpetas: kebab-case o minúsculas, manteniendo un criterio uniforme.
-
-La consistencia en la nomenclatura facilita la comprensión y el mantenimiento del código.
-
----
-
-## Idioma del Código
-
-Todo el código fuente deberá escribirse en inglés.
-
-Esto incluye:
-
-- nombres de variables;
-- funciones;
-- clases;
-- componentes;
-- interfaces;
-- tipos;
-- enumeraciones;
-- tablas y columnas de la base de datos;
-- comentarios técnicos.
-
-La documentación funcional podrá redactarse en español, pero cualquier elemento que forme parte del código o del modelo de datos utilizará nomenclatura en inglés.
-
-Esta decisión favorece la consistencia del proyecto, facilita la incorporación de nuevas herramientas y simplifica la colaboración con desarrolladores de distintos entornos.
-
-# 11. Architecture Decision Records (ADR Simplificados)
-
-## ADR-001: Uso de Next.js como Framework Full Stack
-
-**Decisión**
-
-Utilizar Next.js con App Router como base de la aplicación.
-
-**Ventajas**
-
-* Un único proyecto para frontend y backend.
-* Excelente integración con React.
-* Server Actions integradas.
-* Despliegue optimizado en Vercel.
-
-**Desventajas**
-
-* Mayor dependencia del ecosistema Next.js.
-* Menor flexibilidad para reutilizar la lógica del servidor en otros clientes.
-
----
-
-## ADR-002: Uso de Supabase como Backend as a Service
-
-**Decisión**
-
-Adoptar Supabase para la autenticación y persistencia.
-
-**Ventajas**
-
-* Reduce significativamente el código de infraestructura.
-* PostgreSQL administrado.
-* Autenticación integrada.
-* Row Level Security.
-* Escalabilidad administrada.
-
-**Desventajas**
-
-* Dependencia de un proveedor externo.
-* Algunas funcionalidades avanzadas pueden requerir adaptar la solución al ecosistema de Supabase.
-
----
-
-## ADR-003: Uso de Server Actions para la Lógica de Negocio
-
-**Decisión**
-
-Implementar las operaciones principales mediante Server Actions.
-
-**Ventajas**
-
-* Menor cantidad de código.
-* Mayor seguridad.
-* Integración natural con Next.js.
-* Evita la creación de una API REST innecesaria.
-
-**Desventajas**
-
-* Acoplamiento con el framework.
-* Menor reutilización directa desde clientes externos.
-
----
-
-## ADR-004: Arquitectura Basada en Features
-
-**Decisión**
-
-Organizar el código por funcionalidades del dominio.
-
-**Ventajas**
-
-* Mayor cohesión.
-* Bajo acoplamiento.
-* Escalabilidad.
-* Mejor mantenibilidad.
-* Facilita el trabajo sobre módulos independientes.
-
-**Desventajas**
-
-* Requiere mantener una estructura consistente a medida que crece el proyecto.
-
----
-
-## ADR-005: No Implementar un Backend Independiente
-
-**Decisión**
-
-Evitar un backend separado en el MVP.
-
-**Ventajas**
-
-* Menor complejidad arquitectónica.
-* Reducción del esfuerzo de desarrollo y despliegue.
-* Un único repositorio.
-* Menores costos operativos.
-
-**Desventajas**
-
-* La lógica de negocio queda acoplada a Next.js.
-* Si en el futuro se requirieran múltiples clientes con necesidades muy diferentes, podría ser necesario reevaluar esta decisión.
-
----
-
-# 12. Alcance
-
-## Funcionalidades Incluidas en el MVP
+### Funcionalidades Incluidas en el MVP
 
 El MVP contempla las capacidades necesarias para ofrecer una experiencia completa de gestión de torneos y pronósticos deportivos.
 
@@ -1500,7 +691,12 @@ Incluye:
 
 * registro e inicio de sesión de usuarios;
 * gestión de torneos por administradores;
-* gestión de partidos;
+* gestión del catálogo global de equipos;
+* inscripción de 4, 8, 16 o 32 equipos por torneo;
+* sorteo aleatorio único y generación de llaves de eliminación directa;
+* programación de los partidos generados;
+* avance automático de ganadores;
+* definición del ganador por penales cuando el marcador esté empatado;
 * carga de resultados oficiales;
 * registro y edición de pronósticos antes del inicio de los partidos;
 * cálculo automático de puntajes;
@@ -1509,11 +705,16 @@ Incluye:
 
 ---
 
-## Funcionalidades Fuera del Alcance del MVP
+### Funcionalidades Fuera del Alcance del MVP
 
 Las siguientes funcionalidades se consideran posibles evoluciones del sistema y no forman parte de la primera versión:
 
 * múltiples deportes;
+* fase de grupos;
+* torneos con cantidades de equipos diferentes de 4, 8, 16 o 32;
+* partidos de ida y vuelta;
+* partido por el tercer puesto;
+* cabezas de serie o sorteos condicionados;
 * temporadas y competencias históricas;
 * carga de imágenes y avatares;
 * notificaciones por correo o push;
@@ -1528,7 +729,7 @@ Estas funcionalidades podrán incorporarse en futuras iteraciones sin requerir c
 
 ---
 
-# Conclusión
+## Conclusión
 
 La arquitectura propuesta prioriza la simplicidad, la mantenibilidad y la calidad del código, evitando complejidad innecesaria para el alcance del proyecto.
 
