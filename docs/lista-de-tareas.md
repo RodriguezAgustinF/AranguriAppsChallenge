@@ -26,11 +26,11 @@ Backlog ordenado desde el inicio para construir el MVP definido en `alcance-func
 
 ## 3. Supabase y entornos
 
-- [ ] Crear proyectos Supabase de desarrollo y producción.
-- [ ] Configurar variables de entorno.
-- [ ] Configurar clientes Supabase para navegador y servidor.
-- [ ] Configurar sesiones compatibles con Next.js.
-- [ ] Preparar migraciones y generación de tipos TypeScript.
+- [x] Crear proyectos Supabase de desarrollo y producción.
+- [x] Configurar variables de entorno.
+- [x] Configurar clientes Supabase para navegador y servidor.
+- [x] Configurar sesiones compatibles con Next.js.
+- [x] Preparar migraciones y generación de tipos TypeScript.
 
 ## 4. Base de datos
 
