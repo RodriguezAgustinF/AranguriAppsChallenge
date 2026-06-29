@@ -1,34 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Prode de Fútbol
 
-## Getting Started
+Aplicación web para organizar torneos de eliminación directa y competir mediante pronósticos de resultados.
 
-First, run the development server:
+## Requisitos
 
-```bash
+- Node.js 24.18.x
+- npm 11.16.x
+
+## Desarrollo local
+
+```powershell
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abrir [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Controles de calidad
 
-## Learn More
+```powershell
+npm run lint
+npm run typecheck
+npm run format:check
+npm run build
+```
 
-To learn more about Next.js, take a look at the following resources:
+Para ejecutar todos los controles:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```powershell
+npm run check
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Documentación
 
-## Deploy on Vercel
+- [Arquitectura](./docs/arquitectura.md)
+- [Alcance funcional](./docs/alcance-funcional.md)
+- [Lista de tareas](./docs/lista-de-tareas.md)
+- [Registro de decisiones](./docs/registro-de-decisiones.md)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Flujo Git
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `main`: versiones estables y listas para desplegar.
+- `develop`: integración de trabajo aprobado para la próxima versión.
+- `feat/*`, `fix/*`, `chore/*`, `docs/*` y `test/*`: ramas cortas creadas desde `develop`.
+
+Las ramas de trabajo vuelven a `develop` mediante pull request. Cuando una versión está validada, `develop` se integra en `main` mediante otro pull request.

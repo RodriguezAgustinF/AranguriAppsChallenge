@@ -17,12 +17,12 @@ Backlog ordenado desde el inicio para construir el MVP definido en `alcance-func
 ## 2. Inicialización
 
 - [x] Crear la aplicación con Next.js, App Router y TypeScript estricto.
-- [ ] Configurar Tailwind CSS, ESLint y formateo.
-- [ ] Crear la estructura `app`, `actions`, `components`, `features`, `hooks`, `lib`, `services`, `types` y `utils`.
-- [ ] Configurar alias de importación.
-- [ ] Crear `.env.example` sin secretos.
-- [ ] Configurar scripts de desarrollo, lint, type-check, pruebas y build.
-- [ ] Verificar ejecución local y build inicial.
+- [x] Configurar Tailwind CSS, ESLint y formateo.
+- [x] Crear la estructura `app`, `actions`, `components`, `features`, `hooks`, `lib`, `services`, `types` y `utils`.
+- [x] Configurar alias de importación.
+- [x] Crear `.env.example` sin secretos.
+- [x] Configurar scripts de desarrollo, lint, type-check, pruebas y build.
+- [x] Verificar ejecución local y build inicial.
 
 ## 3. Supabase y entornos
 

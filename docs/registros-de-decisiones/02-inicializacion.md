@@ -85,3 +85,110 @@ Las aprobaciones quedaron declaradas en `allowScripts`; no se habilitaron script
 ### Próximos pasos
 
 La siguiente tarea configurará de forma deliberada Tailwind CSS, ESLint y el formateador. Aunque el scaffold ya proporciona una base funcional para Tailwind y ESLint, esa tarea verificará y completará las reglas de estilo, scripts y formato antes de marcarlos como terminados.
+
+## 2026-06-29 — Estilo, estructura y herramientas de calidad
+
+### Tareas
+
+- Configurar Tailwind CSS, ESLint y formateo.
+- Crear la estructura inicial de carpetas.
+- Configurar el alias de importación.
+- Crear `.env.example` sin secretos.
+- Configurar scripts de desarrollo y control de calidad.
+- Verificar ejecución local y build inicial.
+
+### Tailwind CSS
+
+- Se mantuvo Tailwind CSS 4.3.2 con `@tailwindcss/postcss`.
+- `postcss.config.mjs` registra el plugin oficial.
+- `src/app/globals.css` utiliza `@import "tailwindcss"`.
+- No se creó `tailwind.config.*`: Tailwind 4 utiliza configuración CSS-first y el MVP todavía no necesita personalizaciones.
+- Los tokens visuales se definirán cuando comience el trabajo real de interfaz, evitando anticipar un sistema de diseño sin requerimientos.
+
+### ESLint y Prettier
+
+- ESLint se ocupa de calidad y errores; Prettier se ocupa exclusivamente del formato.
+- Se instaló Prettier 3.9.3 de forma local y exacta.
+- Se instaló `eslint-config-prettier` 10.1.8 al final del flat config para desactivar reglas que podrían competir con Prettier.
+- `.prettierrc.json` fija 100 columnas, dos espacios, punto y coma, comillas dobles, trailing commas y finales de línea LF.
+- `.editorconfig` comparte las reglas esenciales con editores que no ejecuten Prettier.
+- `.prettierignore` excluye artefactos, dependencias, lockfile y documentación. La documentación queda fuera para evitar reformateos masivos y se valida mediante `git diff --check` y revisión de enlaces.
+- No se agregaron hooks Git todavía. Se priorizan comandos explícitos y más adelante CI aplicará los mismos controles.
+
+### Estructura inicial
+
+Se crearon dentro de `src`:
+
+- `actions`;
+- `components`;
+- `features`;
+- `hooks`;
+- `lib`;
+- `services`;
+- `types`;
+- `utils`.
+
+Las carpetas aún vacías contienen `.gitkeep` para que Git preserve la estructura. No se crearon barrels `index.ts` vacíos porque agregarían módulos sin una API real.
+
+### Alias y convención de Next.js 16
+
+- `@/*` resuelve a `./src/*` mediante `tsconfig.json`.
+- La arquitectura se corrigió de `middleware.ts` a `proxy.ts`: Next.js 16 deprecó Middleware y renombró la convención a Proxy.
+- No se creó `proxy.ts` todavía. Se añadirá al integrar Supabase Auth si el refresco de sesión lo requiere.
+- Proxy podrá realizar redirecciones optimistas, pero nunca reemplazará autorización de servidor, funciones PostgreSQL ni RLS.
+
+### Variables de entorno
+
+`.env.example` declara únicamente nombres y valores públicos de desarrollo:
+
+- `NEXT_PUBLIC_SUPABASE_URL`;
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`;
+- `NEXT_PUBLIC_SITE_URL`.
+
+`.gitignore` permite versionar `.env.example` y continúa ignorando los archivos `.env` reales. No se agregó `service_role`, de acuerdo con la estrategia de menor privilegio.
+
+### Scripts
+
+- `npm run dev`: servidor de desarrollo.
+- `npm run build`: build de producción.
+- `npm run start`: servidor de producción.
+- `npm run lint` y `npm run lint:fix`.
+- `npm run typecheck`.
+- `npm run format` y `npm run format:check`.
+- `npm run check`: lint, TypeScript, formato y build en una sola secuencia.
+
+No se agregó todavía un script de pruebas porque el framework de pruebas pertenece a la fase 17. Incluir un comando vacío daría una señal falsa de cobertura.
+
+### Metadatos y documentación base
+
+- El layout raíz utiliza `lang="es"`.
+- Los metadatos dejaron de mostrar “Create Next App” y ahora identifican el Prode de Fútbol.
+- `README.md` documenta requisitos, ejecución, controles, documentación y flujo Git.
+
+### Flujo Git acordado
+
+- `main` se reservará para estados estables.
+- `develop` será la rama de integración.
+- El trabajo nacerá desde `develop` en ramas cortas con prefijos `feat/`, `fix/`, `chore/`, `docs/` o `test/`.
+- Las ramas volverán a `develop` mediante pull request.
+- Las versiones validadas pasarán de `develop` a `main` mediante pull request.
+
+Este flujo agrega más ceremonia que GitHub Flow, pero fue elegido para practicar integración separada de la rama estable. Se evitarán commits directos en `main` y `develop` después de crear la rama de integración.
+
+### Verificaciones finales
+
+- `npm run check`: correcto.
+- `npm run lint`: correcto.
+- `npm run typecheck`: correcto.
+- `npm run format:check`: correcto.
+- `npm run build`: correcto.
+- Servidor de desarrollo: respuesta HTTP 200 en `127.0.0.1:3000` y contenido esperado.
+- `npm audit`: cero vulnerabilidades.
+- Enlaces Markdown: correctos.
+
+### Fuentes consultadas
+
+- [Proxy en Next.js 16](https://nextjs.org/docs/app/getting-started/proxy)
+- [Instalación de Prettier](https://prettier.io/docs/install)
+- [Configuración de Prettier](https://prettier.io/docs/configuration)
+- [Tailwind CSS 4](https://tailwindcss.com/blog/tailwindcss-v4)

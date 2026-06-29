@@ -9,8 +9,8 @@ Para decisiones arquitectónicas estables y transversales, consultar [Decisiones
 | Nº | Fase | Estado | Registro |
 | ---: | --- | --- | --- |
 | 1 | Definiciones iniciales | Completada | [01-definiciones-iniciales.md](./registros-de-decisiones/01-definiciones-iniciales.md) |
-| 2 | Inicialización | En curso | [02-inicializacion.md](./registros-de-decisiones/02-inicializacion.md) |
-| 3 | Supabase y entornos | Pendiente | Se creará al comenzar |
+| 2 | Inicialización | Completada | [02-inicializacion.md](./registros-de-decisiones/02-inicializacion.md) |
+| 3 | Supabase y entornos | Próxima | Se creará al comenzar |
 | 4 | Base de datos | Pendiente | Se creará al comenzar |
 | 5 | Seguridad y RLS | Pendiente | Se creará al comenzar |
 | 6 | Autenticación y autorización | Pendiente | Se creará al comenzar |

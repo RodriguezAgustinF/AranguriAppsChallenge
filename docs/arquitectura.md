@@ -491,7 +491,7 @@ src/
 │
 ├── utils/
 │
-└── middleware.ts
+└── proxy.ts
 ```
 
 #### app/
@@ -661,9 +661,9 @@ Ejemplos:
 
 ---
 
-#### middleware.ts
+#### proxy.ts
 
-El middleware se utilizará para proteger rutas que requieren autenticación.
+Next.js 16 renombró y deprecó la convención `middleware.ts` en favor de `proxy.ts`. Proxy se utilizará únicamente cuando sea necesario refrescar sesiones o realizar redirecciones optimistas. La autorización real continuará ejecutándose en páginas, Server Actions, funciones PostgreSQL y políticas RLS; Proxy no será la frontera de seguridad.
 
 Ejemplos:
 
