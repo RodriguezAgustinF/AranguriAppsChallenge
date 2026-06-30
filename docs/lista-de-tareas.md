@@ -34,26 +34,28 @@ Backlog ordenado desde el inicio para construir el MVP definido en `alcance-func
 
 ## 4. Base de datos
 
-- [ ] Crear el enum de roles `ADMIN` y `USER`.
-- [ ] Crear la tabla de perfiles vinculada con Supabase Authentication.
-- [ ] Crear tablas de torneos, equipos, equipos por torneo, fases, partidos, pronósticos y puntajes por torneo.
-- [ ] Restringir `team_count` a 4, 8, 16 o 32.
-- [ ] Garantizar inscripciones y posiciones de sorteo únicas por torneo.
-- [ ] Modelar dependencias entre partidos y posiciones únicas dentro de cada fase.
-- [ ] Agregar claves, relaciones e índices.
-- [ ] Garantizar un único pronóstico por usuario y partido.
-- [ ] Garantizar un único puntaje por usuario y torneo.
-- [ ] Impedir equipos iguales en un partido y valores de goles negativos.
-- [ ] Exigir que los dos marcadores oficiales sean ambos nulos o ambos no nulos.
-- [ ] Validar que, al generar la llave, los partidos iniciales tengan equipos sin fuentes y los posteriores fuentes con equipos aún nulos.
-- [ ] Validar la coherencia condicional de `penalty_winner_team_id` en resultados y pronósticos.
-- [ ] Impedir cambios en inscripciones, fases y cruces después de generar la llave.
-- [ ] Validar la coherencia de fechas de torneos y partidos.
-- [ ] Derivar `FINISHED` del resultado de la final y detectar torneos atrasados después de `ends_at`.
-- [ ] Definir valores iniciales de roles y estados.
-- [ ] Agregar campos de auditoría.
-- [ ] Impedir desde PostgreSQL modificar o eliminar resultados oficiales publicados.
-- [ ] Crear datos semilla para desarrollo.
+- [x] Crear el enum de roles `ADMIN` y `USER`.
+- [x] Crear la tabla de perfiles vinculada con Supabase Authentication.
+- [x] Crear tablas de torneos, equipos, equipos por torneo, fases, partidos, pronósticos y puntajes por torneo.
+- [x] Crear el almacenamiento y la referencia para escudos o banderas de equipos.
+- [x] Restringir `team_count` a 4, 8, 16 o 32.
+- [x] Garantizar inscripciones y posiciones de sorteo únicas por torneo.
+- [x] Modelar dependencias entre partidos y posiciones únicas dentro de cada fase.
+- [x] Validar torneo, fase anterior y uso único de los partidos fuente de cada cruce.
+- [x] Agregar claves, relaciones e índices.
+- [x] Garantizar un único pronóstico por usuario y partido.
+- [x] Garantizar un único puntaje por usuario y torneo.
+- [x] Impedir equipos iguales en un partido y valores de goles negativos.
+- [x] Exigir que los dos marcadores oficiales sean ambos nulos o ambos no nulos.
+- [x] Validar que, al generar la llave, los partidos iniciales tengan equipos sin fuentes y los posteriores fuentes con equipos aún nulos.
+- [x] Validar la coherencia condicional de `penalty_winner_team_id` en resultados y pronósticos.
+- [x] Impedir cambios en inscripciones, fases y cruces después de generar la llave.
+- [x] Validar la coherencia de fechas de torneos y partidos.
+- [x] Derivar `FINISHED` del resultado de la final y detectar torneos atrasados después de `ends_at`.
+- [x] Definir valores iniciales de roles y estados.
+- [x] Agregar campos de auditoría.
+- [x] Impedir desde PostgreSQL modificar o eliminar resultados oficiales publicados.
+- [x] Crear datos semilla para desarrollo.
 
 ## 5. Seguridad y RLS
 
@@ -65,6 +67,7 @@ Backlog ordenado desde el inicio para construir el MVP definido en `alcance-func
 - [ ] Permitir consultar rankings.
 - [ ] Impedir modificar puntajes directamente desde el cliente.
 - [ ] Restringir la administración al rol `ADMIN`.
+- [ ] Permitir lectura pública y restringir a `ADMIN` las escrituras del bucket `team-logos`.
 - [ ] Impedir que el cliente genere nuevamente la llave o elija participantes de partidos posteriores.
 - [ ] Impedir que el registro público asigne el rol `ADMIN`.
 - [ ] Probar RLS con usuarios anónimos, `USER` y `ADMIN`.
@@ -103,9 +106,11 @@ Backlog ordenado desde el inicio para construir el MVP definido en `alcance-func
 
 - [ ] Crear tipos y validadores.
 - [ ] Implementar el mecanismo administrativo definido para crear y consultar equipos.
+- [ ] Implementar carga, reemplazo y eliminación segura de imágenes en Supabase Storage.
 - [ ] Evitar duplicados según el criterio acordado.
 - [ ] Crear el selector para inscribir equipos en torneos.
 - [ ] Impedir eliminar equipos inscriptos o utilizados en partidos.
+- [ ] Mostrar escudos o banderas en listados, selectores, partidos y llaves.
 
 ## 10. Inscripciones, sorteo y llave
 

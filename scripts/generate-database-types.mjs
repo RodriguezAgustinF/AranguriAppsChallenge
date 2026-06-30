@@ -10,12 +10,12 @@ if (mode !== "--local" && mode !== "--linked") {
 
 const outputPath = resolve("src/types/database.types.ts");
 const temporaryPath = `${outputPath}.tmp`;
-const executable = process.platform === "win32" ? "supabase.cmd" : "supabase";
+const cliPath = resolve("node_modules/supabase/dist/supabase.js");
 
 try {
   const generatedTypes = execFileSync(
-    executable,
-    ["gen", "types", mode, "--lang", "typescript", "--schema", "public"],
+    process.execPath,
+    [cliPath, "gen", "types", mode, "--lang", "typescript", "--schema", "public"],
     { encoding: "utf8" },
   );
 

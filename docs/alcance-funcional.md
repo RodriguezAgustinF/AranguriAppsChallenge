@@ -68,11 +68,11 @@ El administrador podrá mantener un catálogo global de equipos reutilizable ent
 Podrá:
 
 * Consultar el listado de equipos.
-* Crear equipos indicando nombre y abreviatura.
+* Crear equipos indicando nombre, abreviatura y una imagen representativa, como su escudo o bandera.
 * Modificar un equipo únicamente si todavía no fue utilizado en un partido iniciado.
 * Eliminar un equipo únicamente si no está asociado a ningún partido ni inscripto en un torneo.
 
-Los partidos deberán utilizar equipos existentes del catálogo. La carga de escudos no forma parte del MVP.
+Los partidos deberán utilizar equipos existentes del catálogo. La imagen de cada equipo se mostrará en los listados, selectores, partidos y llaves donde aparezca el equipo.
 
 ---
 
