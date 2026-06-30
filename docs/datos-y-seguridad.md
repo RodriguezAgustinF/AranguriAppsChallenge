@@ -119,12 +119,15 @@ Responsabilidades:
 
 * listar equipos;
 * crear equipos;
+* cargar y reemplazar su escudo o bandera;
 * editar equipos que no hayan sido utilizados en partidos iniciados;
 * eliminar equipos que no estén asociados a ningún partido ni inscriptos en un torneo.
 
 La creación y selección serán operaciones separadas: los equipos existentes se inscribirán en un torneo antes del sorteo. Esto evita duplicados accidentales.
 
-El nombre será obligatorio y único sin distinguir mayúsculas, minúsculas ni espacios exteriores. La abreviatura será obligatoria, tendrá entre 2 y 5 caracteres alfanuméricos, se normalizará a mayúsculas y también será única. El MVP no almacenará escudos ni otros archivos.
+El nombre será obligatorio y único sin distinguir mayúsculas, minúsculas ni espacios exteriores. La abreviatura será obligatoria, tendrá entre 2 y 5 caracteres alfanuméricos, se normalizará a mayúsculas y también será única.
+
+Cada equipo tendrá una imagen obligatoria que podrá representar su escudo o bandera. El archivo se almacenará en el bucket público `team-logos` de Supabase Storage y la tabla `teams` conservará únicamente `logo_path`, una ruta independiente del entorno. Se admitirán PNG, JPEG y WebP de hasta 1 MiB. Las escrituras estarán reservadas a administradores mediante políticas de Storage; la lectura será pública porque las imágenes aparecen en pantallas públicas del torneo.
 
 ---
 
@@ -275,9 +278,10 @@ Un usuario puede participar en múltiples torneos y realizar pronósticos sobre 
 
 * id
 * name
-* email
 * role
 * createdAt
+
+El email y las credenciales pertenecen a Supabase Authentication y no se duplicarán en la tabla pública de perfiles. Las operaciones de servidor que necesiten el email lo obtendrán desde la identidad autenticada.
 
 #### Relaciones
 
@@ -364,6 +368,7 @@ La entidad forma parte de un catálogo global y evita duplicar información en m
 * id
 * name
 * abbreviation
+* logoPath
 * createdAt
 * updatedAt
 
