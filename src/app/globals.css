@@ -216,7 +216,87 @@ h1 {
   line-height: 1.5;
 }
 
+h2 {
+  margin-top: 0;
+}
+.management-grid {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: minmax(17rem, 24rem) 1fr;
+  margin-top: 2rem;
+}
+.compact-panel {
+  align-self: start;
+  padding: 1.5rem;
+}
+.entity-form,
+.entity-list {
+  display: grid;
+  gap: 1rem;
+}
+.entity-row {
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 3.5rem 1fr auto;
+  padding: 0.8rem;
+}
+.entity-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+}
+.entity-card .entity-row {
+  border: 0;
+}
+.edit-panel {
+  border-top: 1px solid var(--border);
+  padding: 0.8rem;
+}
+.edit-panel summary {
+  color: var(--primary);
+  cursor: pointer;
+  font-weight: 700;
+}
+.edit-panel .entity-form {
+  margin-top: 1rem;
+}
+.entity-row div:nth-child(2) {
+  display: grid;
+  gap: 0.2rem;
+}
+.entity-row span {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.team-logo {
+  background-color: var(--background);
+  background-position: center;
+  background-size: cover;
+  border-radius: 50%;
+  height: 3.5rem;
+  width: 3.5rem;
+}
+.danger-button {
+  background: transparent;
+  border: 1px solid #efb4b4;
+  border-radius: 0.5rem;
+  color: var(--danger);
+  cursor: pointer;
+  padding: 0.55rem 0.75rem;
+}
+.form-success {
+  color: var(--primary);
+  margin: 0;
+}
+
 @media (max-width: 48rem) {
+  .management-grid {
+    grid-template-columns: 1fr;
+  }
   .admin-header {
     align-items: flex-start;
     flex-direction: column;
