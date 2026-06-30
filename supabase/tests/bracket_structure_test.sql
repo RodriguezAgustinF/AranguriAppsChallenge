@@ -18,6 +18,18 @@ values (
   1
 );
 
+insert into public.teams (id, name, abbreviation, logo_path)
+values
+  ('33000000-0000-0000-0000-000000000001', 'Structure one', 'STO', 'teams/structure-one.png'),
+  ('33000000-0000-0000-0000-000000000002', 'Structure two', 'STT', 'teams/structure-two.png'),
+  ('33000000-0000-0000-0000-000000000003', 'Structure three', 'STR', 'teams/structure-three.png'),
+  ('33000000-0000-0000-0000-000000000004', 'Structure four', 'STF', 'teams/structure-four.png');
+
+insert into public.tournament_teams (tournament_id, team_id)
+select '30000000-0000-0000-0000-000000000001', id
+from public.teams
+where id::text like '33000000-0000-0000-0000-%';
+
 select col_is_fk('public', 'matches', 'home_source_match_id', 'home source references matches');
 select col_is_fk('public', 'matches', 'away_source_match_id', 'away source references matches');
 
@@ -59,28 +71,47 @@ values (
   2
 );
 
-insert into public.matches (id, tournament_id, stage_id, bracket_position)
+insert into public.matches (
+  id,
+  tournament_id,
+  stage_id,
+  bracket_position,
+  home_team_id,
+  away_team_id
+)
 values
   (
     '32000000-0000-0000-0000-000000000001',
     '30000000-0000-0000-0000-000000000001',
     '31000000-0000-0000-0000-000000000001',
-    1
+    1,
+    '33000000-0000-0000-0000-000000000001',
+    '33000000-0000-0000-0000-000000000002'
   ),
   (
     '32000000-0000-0000-0000-000000000002',
     '30000000-0000-0000-0000-000000000001',
     '31000000-0000-0000-0000-000000000001',
-    2
+    2,
+    '33000000-0000-0000-0000-000000000003',
+    '33000000-0000-0000-0000-000000000004'
   );
 
 select throws_ok(
   $$
-    insert into public.matches (tournament_id, stage_id, bracket_position)
+    insert into public.matches (
+      tournament_id,
+      stage_id,
+      bracket_position,
+      home_team_id,
+      away_team_id
+    )
     values (
       '30000000-0000-0000-0000-000000000001',
       '31000000-0000-0000-0000-000000000002',
-      0
+      0,
+      '33000000-0000-0000-0000-000000000001',
+      '33000000-0000-0000-0000-000000000002'
     )
   $$,
   '23514',
@@ -90,11 +121,19 @@ select throws_ok(
 
 select throws_ok(
   $$
-    insert into public.matches (tournament_id, stage_id, bracket_position)
+    insert into public.matches (
+      tournament_id,
+      stage_id,
+      bracket_position,
+      home_team_id,
+      away_team_id
+    )
     values (
       '30000000-0000-0000-0000-000000000001',
       '31000000-0000-0000-0000-000000000001',
-      1
+      1,
+      '33000000-0000-0000-0000-000000000001',
+      '33000000-0000-0000-0000-000000000002'
     )
   $$,
   '23505',

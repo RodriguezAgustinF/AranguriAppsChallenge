@@ -24,10 +24,13 @@ values
 insert into public.teams (id, name, abbreviation, logo_path)
 values
   ('42000000-0000-0000-0000-000000000001', 'Enrolled team', 'ENR', 'teams/enrolled.png'),
-  ('42000000-0000-0000-0000-000000000002', 'Other team', 'OTH', 'teams/other.png');
+  ('42000000-0000-0000-0000-000000000002', 'Other team', 'OTH', 'teams/other.png'),
+  ('42000000-0000-0000-0000-000000000003', 'Enrolled opponent', 'ENO', 'teams/enrolled-opponent.png');
 
 insert into public.tournament_teams (tournament_id, team_id)
-values ('40000000-0000-0000-0000-000000000001', '42000000-0000-0000-0000-000000000001');
+values
+  ('40000000-0000-0000-0000-000000000001', '42000000-0000-0000-0000-000000000001'),
+  ('40000000-0000-0000-0000-000000000001', '42000000-0000-0000-0000-000000000003');
 
 select lives_ok(
   $$
@@ -35,13 +38,15 @@ select lives_ok(
       tournament_id,
       stage_id,
       bracket_position,
-      home_team_id
+      home_team_id,
+      away_team_id
     )
     values (
       '40000000-0000-0000-0000-000000000001',
       '41000000-0000-0000-0000-000000000001',
       1,
-      '42000000-0000-0000-0000-000000000001'
+      '42000000-0000-0000-0000-000000000001',
+      '42000000-0000-0000-0000-000000000003'
     )
   $$,
   'a match accepts its own tournament stage and enrolled team'
@@ -49,11 +54,19 @@ select lives_ok(
 
 select throws_ok(
   $$
-    insert into public.matches (tournament_id, stage_id, bracket_position)
+    insert into public.matches (
+      tournament_id,
+      stage_id,
+      bracket_position,
+      home_team_id,
+      away_team_id
+    )
     values (
       '40000000-0000-0000-0000-000000000001',
       '41000000-0000-0000-0000-000000000002',
-      2
+      2,
+      '42000000-0000-0000-0000-000000000001',
+      '42000000-0000-0000-0000-000000000003'
     )
   $$,
   '23503',
@@ -67,13 +80,15 @@ select throws_ok(
       tournament_id,
       stage_id,
       bracket_position,
-      home_team_id
+      home_team_id,
+      away_team_id
     )
     values (
       '40000000-0000-0000-0000-000000000001',
       '41000000-0000-0000-0000-000000000001',
       2,
-      '42000000-0000-0000-0000-000000000002'
+      '42000000-0000-0000-0000-000000000002',
+      '42000000-0000-0000-0000-000000000003'
     )
   $$,
   '23503',

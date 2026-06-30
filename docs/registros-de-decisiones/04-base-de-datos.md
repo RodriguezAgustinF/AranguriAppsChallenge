@@ -137,6 +137,82 @@ Completada el 29 de junio de 2026.
 - PostgreSQL rechazó dos posiciones iguales dentro del mismo torneo.
 - Se recreó la base desde cero y se ejecutaron todas las pruebas pgTAP y `db lint`.
 
+## 2026-06-30 — Forma inicial de los partidos de la llave
+
+### Tarea
+
+Validar que, al generar la llave, los partidos iniciales tengan equipos sin fuentes y los posteriores fuentes con equipos aún nulos.
+
+### Estado
+
+Completada el 30 de junio de 2026.
+
+### Decisiones
+
+- `matches_sources_complete` impide conservar solamente uno de los dos partidos de origen.
+- El trigger `validate_new_bracket_match_before_insert` valida la forma del partido en el momento de crearlo.
+- Un partido inicial debe insertarse con dos equipos resueltos y sin fuentes.
+- Un partido dependiente debe insertarse con dos fuentes diferentes y ambos equipos nulos.
+- La regla estricta de equipos nulos se aplica solo al `INSERT`: después, la publicación de resultados debe poder completar primero un participante y luego el otro sin borrar las fuentes.
+- La función de trigger usa `search_path` vacío, no es `security definer` y no puede invocarse directamente desde los roles públicos.
+- La pertenencia y el orden de fase de las fuentes, junto con la unicidad global de cada slot alimentado, se validarán en la siguiente regla específica entre filas.
+
+### Verificación
+
+- Se aceptaron dos partidos iniciales completos y una final pendiente con dos fuentes.
+- PostgreSQL rechazó un partido inicial con un solo equipo, un partido posterior con un equipo prematuramente resuelto y un partido con una sola fuente.
+- Se recreó la base desde cero y se ejecutaron todas las pruebas pgTAP y `db lint`.
+
+## 2026-06-30 — Completitud del resultado oficial
+
+### Tarea
+
+Exigir que los dos marcadores oficiales sean ambos nulos o ambos no nulos.
+
+### Estado
+
+Completada el 30 de junio de 2026.
+
+### Decisiones
+
+- `matches_official_scores_complete` exige que `home_score` y `away_score` sean simultáneamente nulos o no nulos.
+- `matches_result_publication_coherent` vincula la existencia del marcador completo con `result_published_at`: ambos conceptos aparecen y desaparecen juntos.
+- Un partido sin resultado conserva los tres campos nulos. Un resultado publicado contiene ambos goles y su instante de publicación.
+- La fecha no representa el final deportivo exacto del encuentro, sino el momento irreversible en que el administrador publicó el resultado en el sistema.
+- La coherencia se aplica en PostgreSQL para impedir estados parciales incluso fuera de la operación transaccional que se implementará posteriormente.
+
+### Verificación
+
+- Se aceptaron correctamente un partido sin resultado y uno con resultado completo.
+- PostgreSQL rechazó un único marcador, marcadores sin fecha de publicación y una fecha sin marcadores.
+- Las pruebas de goles negativos se ajustaron para mantener completo el resto del resultado y aislar la restricción esperada.
+- Se recreó la base desde cero y se ejecutaron todas las pruebas pgTAP y `db lint`.
+
+## 2026-06-30 — Participantes distintos y goles no negativos
+
+### Tarea
+
+Impedir equipos iguales en un partido y valores de goles negativos.
+
+### Estado
+
+Completada el 30 de junio de 2026.
+
+### Decisiones
+
+- `matches_teams_distinct` exige equipos diferentes cuando ambos participantes están resueltos; permite valores nulos para los partidos de rondas posteriores que aún esperan ganadores.
+- Los marcadores oficiales usan restricciones independientes para `home_score` y `away_score`, permitiendo nulos mientras no existe resultado pero rechazando cualquier valor negativo.
+- Los marcadores pronosticados son obligatorios desde la creación y también deben ser mayores o iguales a cero.
+- El valor cero es válido porque representa que un equipo no convierte goles.
+- Las restricciones viven en PostgreSQL además de los validadores futuros de formularios, protegiendo todas las vías de escritura.
+
+### Verificación
+
+- PostgreSQL rechazó un partido con el mismo equipo en ambos lados.
+- PostgreSQL rechazó goles negativos en ambos lados de resultados oficiales y pronósticos.
+- Se comprobó que un pronóstico `0–0` continúa siendo estructuralmente válido; la obligación de elegir ganador por penales se agrega en su tarea específica.
+- Se recreó la base desde cero y se ejecutaron todas las pruebas pgTAP y `db lint`.
+
 ## 2026-06-30 — Unicidad de puntajes por torneo
 
 ### Tarea
