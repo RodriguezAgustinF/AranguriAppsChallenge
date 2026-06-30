@@ -288,7 +288,7 @@ Completada el 30 de junio de 2026.
 - Un partido dependiente debe insertarse con dos fuentes diferentes y ambos equipos nulos.
 - La regla estricta de equipos nulos se aplica solo al `INSERT`: después, la publicación de resultados debe poder completar primero un participante y luego el otro sin borrar las fuentes.
 - La función de trigger usa `search_path` vacío, no es `security definer` y no puede invocarse directamente desde los roles públicos.
-- La pertenencia y el orden de fase de las fuentes, junto con la unicidad global de cada slot alimentado, se validarán en la siguiente regla específica entre filas.
+- La pertenencia y el orden de fase de las fuentes, junto con la unicidad global de cada slot alimentado, se validan en la regla específica entre filas documentada al cierre de esta fase.
 
 ### Verificación
 
@@ -387,7 +387,7 @@ Completada el 29 de junio de 2026.
 - La relación de `matches` con `stages` pasó a ser compuesta por `(stage_id, tournament_id)`, impidiendo asociar un partido con una fase de otro torneo.
 - Los participantes y el ganador por penales de un resultado oficial referencian `(tournament_id, team_id)` de `tournament_teams`, no solamente el catálogo global. Así un partido no puede usar un equipo que no esté inscripto en su torneo.
 - Las relaciones directas redundantes de esos campos hacia `teams.id` se reemplazaron por las relaciones compuestas; `tournament_teams.team_id` ya garantiza la existencia del equipo global.
-- Se mantuvieron para una tarea posterior las reglas temporales y de fase de los partidos de origen, porque requieren validación entre filas más específica.
+- Las reglas de torneo, fase y uso único de los partidos de origen se completaron mediante una validación entre filas al cierre de esta fase.
 - Se agregaron índices para inicio de torneos, consultas de calendario por torneo, equipos locales y visitantes, partidos de origen, pronósticos por partido, puntajes por torneo e inscripciones inversas por equipo.
 - No se duplicaron índices cuyo prefijo ya está cubierto por claves primarias o restricciones únicas.
 
@@ -441,7 +441,7 @@ Completada el 29 de junio de 2026.
 - Cada partido mantiene un `bracket_position` positivo y único dentro de su fase.
 - `home_source_match_id` y `away_source_match_id` continúan como claves foráneas autorreferenciales opcionales hacia `matches`. Así una posición de una ronda posterior representa que recibirá al ganador de un partido anterior.
 - Un partido no puede usar el mismo encuentro como fuente de ambos lados.
-- La validación de que las fuentes pertenezcan al mismo torneo, provengan de la fase inmediatamente anterior y alimenten un único slot se implementará en la tarea específica posterior; requiere lógica entre filas y no puede expresarse por completo con un `CHECK` local.
+- La validación de que las fuentes pertenezcan al mismo torneo, provengan de la fase inmediatamente anterior y alimenten un único slot se completa mediante un trigger específico entre filas.
 - Las restricciones únicas generan índices útiles para localizar fases y posiciones sin duplicar índices manuales.
 
 ### Verificación
@@ -548,3 +548,50 @@ Completada el 30 de junio de 2026.
 - PostgreSQL rechazó cambiar el marcador y los metadatos de un partido publicado.
 - PostgreSQL rechazó eliminar un partido publicado y mantuvo permitido eliminar uno sin resultado cuando ninguna otra regla lo impide.
 - La prueba anterior de completitud se separó en dos partidos para no depender de despublicar un resultado, una operación que ahora está correctamente prohibida.
+
+## 2026-06-30 — Datos semilla para desarrollo
+
+### Tarea
+
+Crear datos semilla para desarrollo.
+
+### Estado
+
+Completada el 30 de junio de 2026.
+
+### Decisiones
+
+- `supabase/seed.sql` crea cuatro selecciones determinísticas, un torneo de desarrollo y sus cuatro inscripciones.
+- Los UUID son fijos y usan un prefijo reconocible para que las pruebas y el desarrollo local puedan localizar los registros sin depender de nombres visibles.
+- Las fechas se calculan respecto de `now()`: el torneo comienza dentro de 30 días y finaliza siete días después. De esta manera cada `db reset` sigue cumpliendo la regla que exige torneos nuevos en el futuro.
+- El torneo y sus inscripciones usan `ON CONFLICT DO NOTHING`. Ejecutar la semilla manualmente no elimina ni reemplaza un escenario local que ya esté en uso; `db reset` continúa generándolo desde cero con fechas nuevas.
+- Los equipos se insertan con `upsert` por UUID para conservar referencias estables y mantener actualizado el catálogo semilla si se vuelve a ejecutar.
+- El torneo queda en estado `UPCOMING`, con equipos inscriptos pero sin posiciones de sorteo, fases ni partidos. No se replica manualmente la responsabilidad de la futura función `generate_bracket`.
+- No se crean identidades de Supabase Auth ni contraseñas conocidas. Los usuarios de prueba se incorporarán cuando se implemente y asegure el flujo de autenticación.
+- Cada equipo incluye una ruta estable bajo `seed/` en el bucket `team-logos`. Los binarios no se insertan directamente en las tablas internas de Storage porque hacerlo por SQL crearía metadatos sin un objeto real en el almacenamiento; se cargarán mediante la API de Storage al preparar los datos de demostración.
+- Esta semilla estructural no sustituye la tarea posterior de datos de demostración, que incluirá un escenario completo cuando existan los servicios de llave, autenticación, pronósticos y resultados.
+
+### Verificación
+
+- Una prueba pgTAP comprueba el catálogo, las rutas de imagen, el torneo futuro y sus cuatro inscripciones sin sortear.
+- La prueba confirma que la semilla no crea fases y, por lo tanto, no evita el flujo transaccional de generación de la llave.
+
+## 2026-06-30 — Coherencia entre partidos fuente y cruces
+
+### Motivo de la corrección
+
+La revisión final de la fase detectó que tres invariantes prometidas en decisiones anteriores no tenían una tarea explícita ni una implementación: pertenencia al mismo torneo, procedencia de la fase inmediatamente anterior y uso único de cada partido fuente.
+
+### Decisiones
+
+- Todo partido fuente debe pertenecer al mismo torneo que el cruce que alimentará.
+- La fase del partido fuente debe tener un `stage_order` exactamente anterior al del partido destino. Esto impide ciclos, saltos de ronda y dependencias dentro de la misma fase.
+- Cada partido fuente puede aparecer en un solo slot posterior, sin importar si se usa como fuente local o visitante.
+- La validación bloquea la fila del torneo mientras comprueba el uso de las fuentes. Así dos escrituras concurrentes del mismo torneo no pueden asignar el mismo ganador a cruces distintos.
+- La regla se ejecuta en inserciones y en cambios de torneo, fase o fuentes. Después de generar la llave, las protecciones existentes continúan impidiendo modificar esas columnas.
+- Se agregó el checkbox que faltaba a la lista de tareas y se corrigieron las referencias que describían esta validación como futura.
+
+### Verificación
+
+- Se aceptó un cruce formado por dos semifinales del mismo torneo.
+- PostgreSQL rechazó una fuente de otro torneo, una fuente de la misma fase y la reutilización de una fuente ya asignada.

@@ -41,6 +41,7 @@ Backlog ordenado desde el inicio para construir el MVP definido en `alcance-func
 - [x] Restringir `team_count` a 4, 8, 16 o 32.
 - [x] Garantizar inscripciones y posiciones de sorteo únicas por torneo.
 - [x] Modelar dependencias entre partidos y posiciones únicas dentro de cada fase.
+- [x] Validar torneo, fase anterior y uso único de los partidos fuente de cada cruce.
 - [x] Agregar claves, relaciones e índices.
 - [x] Garantizar un único pronóstico por usuario y partido.
 - [x] Garantizar un único puntaje por usuario y torneo.
@@ -54,7 +55,7 @@ Backlog ordenado desde el inicio para construir el MVP definido en `alcance-func
 - [x] Definir valores iniciales de roles y estados.
 - [x] Agregar campos de auditoría.
 - [x] Impedir desde PostgreSQL modificar o eliminar resultados oficiales publicados.
-- [ ] Crear datos semilla para desarrollo.
+- [x] Crear datos semilla para desarrollo.
 
 ## 5. Seguridad y RLS
 
