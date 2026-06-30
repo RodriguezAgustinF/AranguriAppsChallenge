@@ -11,8 +11,8 @@ Para decisiones arquitectónicas estables y transversales, consultar [Decisiones
 | 1 | Definiciones iniciales | Completada | [01-definiciones-iniciales.md](./registros-de-decisiones/01-definiciones-iniciales.md) |
 | 2 | Inicialización | Completada | [02-inicializacion.md](./registros-de-decisiones/02-inicializacion.md) |
 | 3 | Supabase y entornos | Completada | [03-supabase-y-entornos.md](./registros-de-decisiones/03-supabase-y-entornos.md) |
-| 4 | Base de datos | En curso | [04-base-de-datos.md](./registros-de-decisiones/04-base-de-datos.md) |
-| 5 | Seguridad y RLS | Pendiente | Se creará al comenzar |
+| 4 | Base de datos | Completada | [04-base-de-datos.md](./registros-de-decisiones/04-base-de-datos.md) |
+| 5 | Seguridad y RLS | En curso | [05-seguridad-y-rls.md](./registros-de-decisiones/05-seguridad-y-rls.md) |
 | 6 | Autenticación y autorización | Pendiente | Se creará al comenzar |
 | 7 | Interfaz base | Pendiente | Se creará al comenzar |
 | 8 | Torneos | Pendiente | Se creará al comenzar |
