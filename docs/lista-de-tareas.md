@@ -47,8 +47,8 @@ Backlog ordenado desde el inicio para construir el MVP definido en `alcance-func
 - [x] Impedir equipos iguales en un partido y valores de goles negativos.
 - [x] Exigir que los dos marcadores oficiales sean ambos nulos o ambos no nulos.
 - [x] Validar que, al generar la llave, los partidos iniciales tengan equipos sin fuentes y los posteriores fuentes con equipos aún nulos.
-- [ ] Validar la coherencia condicional de `penalty_winner_team_id` en resultados y pronósticos.
-- [ ] Impedir cambios en inscripciones, fases y cruces después de generar la llave.
+- [x] Validar la coherencia condicional de `penalty_winner_team_id` en resultados y pronósticos.
+- [x] Impedir cambios en inscripciones, fases y cruces después de generar la llave.
 - [ ] Validar la coherencia de fechas de torneos y partidos.
 - [ ] Derivar `FINISHED` del resultado de la final y detectar torneos atrasados después de `ends_at`.
 - [ ] Definir valores iniciales de roles y estados.

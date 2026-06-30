@@ -137,6 +137,58 @@ Completada el 29 de junio de 2026.
 - PostgreSQL rechazó dos posiciones iguales dentro del mismo torneo.
 - Se recreó la base desde cero y se ejecutaron todas las pruebas pgTAP y `db lint`.
 
+## 2026-06-30 — Inmutabilidad de la llave generada
+
+### Tarea
+
+Impedir cambios en inscripciones, fases y cruces después de generar la llave.
+
+### Estado
+
+Completada el 30 de junio de 2026.
+
+### Decisiones
+
+- `bracket_generated_at` continúa siendo el indicador persistido de que la estructura quedó cerrada.
+- Después de ese instante se bloquean altas, modificaciones y bajas de `tournament_teams` y `stages`.
+- También se bloquean altas y bajas de partidos, además de cambios de torneo, fase, posición o fuentes.
+- La capacidad y `bracket_generated_at` no pueden cambiar una vez generada la llave.
+- `starts_at` y los campos del resultado permanecen editables por las operaciones autorizadas correspondientes.
+- Los participantes solo pueden completarse si la transacción establece localmente `app.allow_bracket_progression = true`. La futura función `publish_match_result` será la única operación pública del proyecto que habilite esa marca mientras avanza un ganador.
+- Las funciones protectoras son triggers con `search_path` vacío, sin `security definer` y sin permiso de ejecución directa para roles públicos.
+
+### Verificación
+
+- Se probaron bloqueos sobre capacidad, inscripciones, fases, partidos, posiciones y participantes.
+- Se comprobó que programar un partido continúa permitido.
+- Se comprobó que una transacción interna marcada puede completar un participante de una ronda posterior.
+- Se recreó la base desde cero y se ejecutaron todas las pruebas pgTAP y `db lint`.
+
+## 2026-06-30 — Coherencia del ganador por penales
+
+### Tarea
+
+Validar la coherencia condicional de `penalty_winner_team_id` en resultados y pronósticos.
+
+### Estado
+
+Completada el 30 de junio de 2026.
+
+### Decisiones
+
+- Un resultado o pronóstico empatado exige `penalty_winner_team_id`.
+- Un marcador no empatado exige que `penalty_winner_team_id` sea nulo porque el ganador ya se deriva de los goles.
+- En resultados oficiales, un `CHECK` confirma además que el ganador por penales sea local o visitante.
+- En pronósticos, la condición empate/no empate se expresa con un `CHECK`; un trigger consulta el partido para asegurar que el equipo elegido sea uno de sus participantes.
+- El trigger de pronósticos no usa `security definer`, fija un `search_path` vacío y no es ejecutable directamente por roles públicos.
+- No se almacenan goles de la tanda: únicamente el equipo ganador, ya que el detalle de penales no afecta la puntuación.
+
+### Verificación
+
+- Se aceptaron empates oficiales y pronosticados con un participante como ganador por penales.
+- Se rechazaron empates sin ganador, marcadores no empatados con ganador y equipos ajenos al partido en ambos contextos.
+- Se recreó la base desde cero y se ejecutaron todas las pruebas pgTAP y `db lint`.
+
 ## 2026-06-30 — Forma inicial de los partidos de la llave
 
 ### Tarea
@@ -210,7 +262,7 @@ Completada el 30 de junio de 2026.
 
 - PostgreSQL rechazó un partido con el mismo equipo en ambos lados.
 - PostgreSQL rechazó goles negativos en ambos lados de resultados oficiales y pronósticos.
-- Se comprobó que un pronóstico `0–0` continúa siendo estructuralmente válido; la obligación de elegir ganador por penales se agrega en su tarea específica.
+- Se comprobó que cero goles continúa siendo un valor válido; al completar la regla de penales, un pronóstico `0–0` también debe elegir al equipo ganador.
 - Se recreó la base desde cero y se ejecutaron todas las pruebas pgTAP y `db lint`.
 
 ## 2026-06-30 — Unicidad de puntajes por torneo

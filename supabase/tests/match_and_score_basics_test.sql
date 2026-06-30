@@ -136,10 +136,22 @@ select throws_ok(
 
 select lives_ok(
   $$
-    insert into public.predictions (user_id, match_id, home_score, away_score)
-    values ('74000000-0000-0000-0000-000000000001', '73000000-0000-0000-0000-000000000001', 0, 0)
+    insert into public.predictions (
+      user_id,
+      match_id,
+      home_score,
+      away_score,
+      penalty_winner_team_id
+    )
+    values (
+      '74000000-0000-0000-0000-000000000001',
+      '73000000-0000-0000-0000-000000000001',
+      0,
+      0,
+      '72000000-0000-0000-0000-000000000001'
+    )
   $$,
-  'zero goals remain valid'
+  'zero goals remain valid when a penalty winner is selected'
 );
 
 select * from finish();
