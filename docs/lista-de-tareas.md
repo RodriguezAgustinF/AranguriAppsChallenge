@@ -2,6 +2,8 @@
 
 Backlog ordenado desde el inicio para construir el MVP definido en `alcance-funcional.md` y en la documentación enlazada desde `arquitectura.md`.
 
+> Para la entrega del 1 de julio de 2026, seguir primero el [plan de entrega administrativo](./plan-de-entrega.md). Este recorte reorganiza prioridades sin eliminar el alcance final de esta lista.
+
 ## 1. Definiciones iniciales
 
 - [x] Confirmar versiones de Node.js, Next.js y dependencias principales.
@@ -61,12 +63,12 @@ Backlog ordenado desde el inicio para construir el MVP definido en `alcance-func
 
 - [x] Habilitar RLS en todas las tablas expuestas.
 - [x] Permitir consultar torneos, equipos y partidos disponibles.
-- [ ] Permitir que cada usuario consulte sus pronósticos.
-- [ ] Permitir crear o editar pronósticos propios solo antes del partido.
+- [x] Permitir que cada usuario consulte sus pronósticos.
+- [x] Permitir crear o editar pronósticos propios solo antes del partido.
 - [ ] Impedir escrituras sobre pronósticos ajenos.
 - [ ] Permitir consultar rankings.
 - [ ] Impedir modificar puntajes directamente desde el cliente.
-- [ ] Restringir la administración al rol `ADMIN`.
+- [x] Restringir la administración al rol `ADMIN`.
 - [ ] Permitir lectura pública y restringir a `ADMIN` las escrituras del bucket `team-logos`.
 - [ ] Impedir que el cliente genere nuevamente la llave o elija participantes de partidos posteriores.
 - [ ] Impedir que el registro público asigne el rol `ADMIN`.
@@ -76,10 +78,10 @@ Backlog ordenado desde el inicio para construir el MVP definido en `alcance-func
 
 - [ ] Implementar registro público con rol fijo `USER`.
 - [ ] Crear automáticamente el perfil del usuario.
-- [ ] Implementar inicio y cierre de sesión.
-- [ ] Restaurar y refrescar sesiones.
-- [ ] Proteger rutas autenticadas y administrativas.
-- [ ] Crear helpers de servidor para obtener el usuario y validar su rol.
+- [x] Implementar inicio y cierre de sesión.
+- [x] Restaurar y refrescar sesiones.
+- [x] Proteger rutas autenticadas y administrativas.
+- [x] Crear helpers de servidor para obtener el usuario y validar su rol.
 - [ ] Documentar el alta manual en Supabase Auth y de su perfil `ADMIN`.
 - [ ] Crear una cuenta administrativa de desarrollo.
 - [ ] Verificar que el MVP no ofrezca recuperación de contraseña.

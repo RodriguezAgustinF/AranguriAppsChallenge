@@ -13,7 +13,7 @@ Para decisiones arquitectónicas estables y transversales, consultar [Decisiones
 | 3 | Supabase y entornos | Completada | [03-supabase-y-entornos.md](./registros-de-decisiones/03-supabase-y-entornos.md) |
 | 4 | Base de datos | Completada | [04-base-de-datos.md](./registros-de-decisiones/04-base-de-datos.md) |
 | 5 | Seguridad y RLS | En curso | [05-seguridad-y-rls.md](./registros-de-decisiones/05-seguridad-y-rls.md) |
-| 6 | Autenticación y autorización | Pendiente | Se creará al comenzar |
+| 6 | Autenticación y autorización | En curso | [06-autenticacion-y-autorizacion.md](./registros-de-decisiones/06-autenticacion-y-autorizacion.md) |
 | 7 | Interfaz base | Pendiente | Se creará al comenzar |
 | 8 | Torneos | Pendiente | Se creará al comenzar |
 | 9 | Equipos | Pendiente | Se creará al comenzar |
