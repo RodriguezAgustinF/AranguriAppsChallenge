@@ -164,6 +164,32 @@ Completada el 30 de junio de 2026.
 - Se comprobó que el resultado de la final produce `FINISHED` y el campeón correcto.
 - Se recreó la base desde cero, se regeneraron los tipos TypeScript y se ejecutaron todas las pruebas, `db lint` y el build.
 
+## 2026-06-30 — Valores iniciales del modelo
+
+### Tarea
+
+Definir valores iniciales de roles y estados.
+
+### Estado
+
+Completada el 30 de junio de 2026.
+
+### Decisiones
+
+- Los perfiles nuevos comienzan con rol `USER`; ningún metadato de registro puede elegir `ADMIN`.
+- Un torneo recién creado debe comenzar en el futuro, por lo que su estado derivado inicial es `UPCOMING`.
+- `bracket_generated_at` y `draw_position` comienzan nulos hasta ejecutar el sorteo.
+- Los partidos se crean con `starts_at` nulo y, por lo tanto, estado lógico `UNSCHEDULED`.
+- Marcadores, ganador por penales y `result_published_at` comienzan nulos; no existe resultado oficial inicial.
+- Un registro de `tournament_scores` comienza con cero puntos.
+- No se agregaron columnas ni defaults de estado: `UPCOMING` y `UNSCHEDULED` se derivan de fechas y resultados, evitando estados persistidos desactualizados.
+- Los valores ya estaban implementados en migraciones anteriores; esta tarea los consolida mediante pruebas contractuales sin crear una migración vacía.
+
+### Verificación
+
+- pgTAP verificó los siete valores iniciales descritos usando registros reales relacionados.
+- Se recreó la base desde cero y se ejecutaron todas las pruebas y `db lint`.
+
 ## 2026-06-30 — Coherencia temporal
 
 ### Tarea
@@ -472,3 +498,53 @@ Completada el 29 de junio de 2026.
 - Se probó que eliminar la identidad elimina su perfil mediante cascada.
 - Las verificaciones del perfil se guardaron como una prueba pgTAP versionada y repetible en `supabase/tests/profiles_test.sql`; se agregó `npm run db:test` para ejecutar las pruebas de PostgreSQL.
 - Se ejecutaron lint, comprobación de tipos, formato y build de producción.
+
+## 2026-06-30 — Campos de auditoría
+
+### Tarea
+
+Agregar campos de auditoría.
+
+### Estado
+
+Completada el 30 de junio de 2026.
+
+### Decisiones
+
+- Todas las tablas del dominio exponen `created_at` y `updated_at` como marcas de tiempo obligatorias con zona horaria. Se completó `created_at` en `tournament_scores` y `updated_at` en las tablas que aún no lo tenían.
+- Se mantuvieron ambos campos incluso en tablas cuya modificación quedará muy restringida. La convención uniforme simplifica diagnósticos, soporte y futuras consultas administrativas.
+- La función compartida `set_updated_at()` reemplaza automáticamente `updated_at` antes de cada actualización. La integridad no depende de que cada cliente o servicio recuerde enviar la fecha.
+- Se utiliza `now()`, que es estable dentro de la transacción, para que todos los cambios de una misma operación atómica compartan una referencia temporal coherente.
+- No se agregó un identificador de usuario modificador. La autoría de cada operación se definirá junto con RLS y los servicios administrativos; guardar ahora un actor opcional o provisto por el cliente daría una falsa garantía de auditoría.
+- `result_published_at` no es sustituido por `updated_at`: representa un evento de dominio específico y seguirá siendo la fuente para determinar que existe un resultado oficial.
+
+### Verificación
+
+- Una prueba pgTAP verifica la presencia de los campos que se incorporaron y conserva la cobertura sobre `teams`, que ya contaba con ambos.
+- La prueba modifica un equipo con una fecha antigua y confirma que PostgreSQL actualiza `updated_at` sin intervención del cliente.
+
+## 2026-06-30 — Inmutabilidad de resultados oficiales publicados
+
+### Tarea
+
+Impedir desde PostgreSQL modificar o eliminar resultados oficiales publicados.
+
+### Estado
+
+Completada el 30 de junio de 2026.
+
+### Decisiones
+
+- Un partido se considera publicado cuando su valor anterior de `result_published_at` no es nulo.
+- Desde ese momento se bloquea cualquier `UPDATE` o `DELETE` sobre la fila completa, no solamente los goles. Modificar equipos, fase, fuentes o fecha también cambiaría el significado histórico del resultado.
+- La primera publicación continúa permitida porque el trigger evalúa el estado anterior. La futura función transaccional podrá guardar el resultado, actualizar puntajes y avanzar el ganador al partido siguiente en una sola operación.
+- El avance de la llave no requiere modificar el partido publicado: modifica los participantes del partido posterior mediante el permiso interno ya previsto para esa operación.
+- La protección es un trigger de PostgreSQL y se aplica también a escrituras administrativas, SQL directo o futuros errores de autorización. RLS aportará una capa adicional, pero no será la responsable de esta invariante.
+- No existe una vía de corrección en el MVP porque el alcance establece que el resultado oficial es definitivo. Incorporarla exigiría un modelo explícito de historial y auditoría, fuera del alcance actual.
+
+### Verificación
+
+- Se comprobó que un partido sin resultado admite su primera publicación.
+- PostgreSQL rechazó cambiar el marcador y los metadatos de un partido publicado.
+- PostgreSQL rechazó eliminar un partido publicado y mantuvo permitido eliminar uno sin resultado cuando ninguna otra regla lo impide.
+- La prueba anterior de completitud se separó en dos partidos para no depender de despublicar un resultado, una operación que ahora está correctamente prohibida.

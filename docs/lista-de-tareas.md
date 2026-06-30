@@ -51,9 +51,9 @@ Backlog ordenado desde el inicio para construir el MVP definido en `alcance-func
 - [x] Impedir cambios en inscripciones, fases y cruces después de generar la llave.
 - [x] Validar la coherencia de fechas de torneos y partidos.
 - [x] Derivar `FINISHED` del resultado de la final y detectar torneos atrasados después de `ends_at`.
-- [ ] Definir valores iniciales de roles y estados.
-- [ ] Agregar campos de auditoría.
-- [ ] Impedir desde PostgreSQL modificar o eliminar resultados oficiales publicados.
+- [x] Definir valores iniciales de roles y estados.
+- [x] Agregar campos de auditoría.
+- [x] Impedir desde PostgreSQL modificar o eliminar resultados oficiales publicados.
 - [ ] Crear datos semilla para desarrollo.
 
 ## 5. Seguridad y RLS

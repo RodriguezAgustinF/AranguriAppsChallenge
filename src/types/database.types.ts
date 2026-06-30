@@ -19,6 +19,7 @@ export type Database = {
           stage_id: string;
           starts_at: string | null;
           tournament_id: string;
+          updated_at: string;
         };
         Insert: {
           away_score?: number | null;
@@ -35,6 +36,7 @@ export type Database = {
           stage_id: string;
           starts_at?: string | null;
           tournament_id: string;
+          updated_at?: string;
         };
         Update: {
           away_score?: number | null;
@@ -51,6 +53,7 @@ export type Database = {
           stage_id?: string;
           starts_at?: string | null;
           tournament_id?: string;
+          updated_at?: string;
         };
         Relationships: [
           {
@@ -119,6 +122,7 @@ export type Database = {
           id: string;
           match_id: string;
           penalty_winner_team_id: string | null;
+          updated_at: string;
           user_id: string;
         };
         Insert: {
@@ -128,6 +132,7 @@ export type Database = {
           id?: string;
           match_id: string;
           penalty_winner_team_id?: string | null;
+          updated_at?: string;
           user_id: string;
         };
         Update: {
@@ -137,6 +142,7 @@ export type Database = {
           id?: string;
           match_id?: string;
           penalty_winner_team_id?: string | null;
+          updated_at?: string;
           user_id?: string;
         };
         Relationships: [
@@ -169,18 +175,21 @@ export type Database = {
           id: string;
           name: string;
           role: Database["public"]["Enums"]["user_role"];
+          updated_at: string;
         };
         Insert: {
           created_at?: string;
           id: string;
           name: string;
           role?: Database["public"]["Enums"]["user_role"];
+          updated_at?: string;
         };
         Update: {
           created_at?: string;
           id?: string;
           name?: string;
           role?: Database["public"]["Enums"]["user_role"];
+          updated_at?: string;
         };
         Relationships: [];
       };
@@ -191,6 +200,7 @@ export type Database = {
           stage_order: number;
           tournament_id: string;
           type: Database["public"]["Enums"]["stage_type"];
+          updated_at: string;
         };
         Insert: {
           created_at?: string;
@@ -198,6 +208,7 @@ export type Database = {
           stage_order: number;
           tournament_id: string;
           type: Database["public"]["Enums"]["stage_type"];
+          updated_at?: string;
         };
         Update: {
           created_at?: string;
@@ -205,6 +216,7 @@ export type Database = {
           stage_order?: number;
           tournament_id?: string;
           type?: Database["public"]["Enums"]["stage_type"];
+          updated_at?: string;
         };
         Relationships: [
           {
@@ -252,21 +264,27 @@ export type Database = {
       };
       tournament_scores: {
         Row: {
+          created_at: string;
           id: string;
           points: number;
           tournament_id: string;
+          updated_at: string;
           user_id: string;
         };
         Insert: {
+          created_at?: string;
           id?: string;
           points?: number;
           tournament_id: string;
+          updated_at?: string;
           user_id: string;
         };
         Update: {
+          created_at?: string;
           id?: string;
           points?: number;
           tournament_id?: string;
+          updated_at?: string;
           user_id?: string;
         };
         Relationships: [
@@ -300,6 +318,7 @@ export type Database = {
           id: string;
           team_id: string;
           tournament_id: string;
+          updated_at: string;
         };
         Insert: {
           created_at?: string;
@@ -307,6 +326,7 @@ export type Database = {
           id?: string;
           team_id: string;
           tournament_id: string;
+          updated_at?: string;
         };
         Update: {
           created_at?: string;
@@ -314,6 +334,7 @@ export type Database = {
           id?: string;
           team_id?: string;
           tournament_id?: string;
+          updated_at?: string;
         };
         Relationships: [
           {
@@ -349,6 +370,7 @@ export type Database = {
           name: string;
           starts_at: string;
           team_count: number;
+          updated_at: string;
         };
         Insert: {
           bracket_generated_at?: string | null;
@@ -359,6 +381,7 @@ export type Database = {
           name: string;
           starts_at: string;
           team_count: number;
+          updated_at?: string;
         };
         Update: {
           bracket_generated_at?: string | null;
@@ -369,6 +392,7 @@ export type Database = {
           name?: string;
           starts_at?: string;
           team_count?: number;
+          updated_at?: string;
         };
         Relationships: [];
       };

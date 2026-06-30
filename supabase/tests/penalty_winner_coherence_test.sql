@@ -37,14 +37,39 @@ insert into public.matches (
   home_team_id,
   away_team_id
 )
-values (
-  'a3000000-0000-0000-0000-000000000001',
-  'a0000000-0000-0000-0000-000000000001',
-  'a1000000-0000-0000-0000-000000000001',
-  1,
-  'a2000000-0000-0000-0000-000000000001',
-  'a2000000-0000-0000-0000-000000000002'
-);
+values
+  (
+    'a3000000-0000-0000-0000-000000000001',
+    'a0000000-0000-0000-0000-000000000001',
+    'a1000000-0000-0000-0000-000000000001',
+    1,
+    'a2000000-0000-0000-0000-000000000001',
+    'a2000000-0000-0000-0000-000000000002'
+  ),
+  (
+    'a3000000-0000-0000-0000-000000000002',
+    'a0000000-0000-0000-0000-000000000001',
+    'a1000000-0000-0000-0000-000000000001',
+    2,
+    'a2000000-0000-0000-0000-000000000001',
+    'a2000000-0000-0000-0000-000000000002'
+  ),
+  (
+    'a3000000-0000-0000-0000-000000000003',
+    'a0000000-0000-0000-0000-000000000001',
+    'a1000000-0000-0000-0000-000000000001',
+    3,
+    'a2000000-0000-0000-0000-000000000001',
+    'a2000000-0000-0000-0000-000000000002'
+  ),
+  (
+    'a3000000-0000-0000-0000-000000000004',
+    'a0000000-0000-0000-0000-000000000001',
+    'a1000000-0000-0000-0000-000000000001',
+    4,
+    'a2000000-0000-0000-0000-000000000001',
+    'a2000000-0000-0000-0000-000000000002'
+  );
 
 insert into auth.users (
   id,
@@ -82,8 +107,11 @@ select lives_ok(
 select throws_ok(
   $$
     update public.matches
-    set penalty_winner_team_id = null
-    where id = 'a3000000-0000-0000-0000-000000000001'
+    set home_score = 1,
+        away_score = 1,
+        penalty_winner_team_id = null,
+        result_published_at = now()
+    where id = 'a3000000-0000-0000-0000-000000000002'
   $$,
   '23514',
   'new row for relation "matches" violates check constraint "matches_penalty_winner_coherent"',
@@ -94,8 +122,10 @@ select throws_ok(
   $$
     update public.matches
     set home_score = 2,
-        away_score = 1
-    where id = 'a3000000-0000-0000-0000-000000000001'
+        away_score = 1,
+        penalty_winner_team_id = 'a2000000-0000-0000-0000-000000000001',
+        result_published_at = now()
+    where id = 'a3000000-0000-0000-0000-000000000003'
   $$,
   '23514',
   'new row for relation "matches" violates check constraint "matches_penalty_winner_coherent"',
@@ -105,8 +135,11 @@ select throws_ok(
 select throws_ok(
   $$
     update public.matches
-    set penalty_winner_team_id = 'a2000000-0000-0000-0000-000000000003'
-    where id = 'a3000000-0000-0000-0000-000000000001'
+    set home_score = 1,
+        away_score = 1,
+        penalty_winner_team_id = 'a2000000-0000-0000-0000-000000000003',
+        result_published_at = now()
+    where id = 'a3000000-0000-0000-0000-000000000004'
   $$,
   '23514',
   'new row for relation "matches" violates check constraint "matches_penalty_winner_coherent"',
