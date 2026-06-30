@@ -1,0 +1,1 @@
+-- Los datos de desarrollo se agregarán después de crear el esquema del proyecto.
