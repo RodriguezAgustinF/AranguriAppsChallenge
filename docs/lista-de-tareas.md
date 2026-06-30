@@ -49,8 +49,8 @@ Backlog ordenado desde el inicio para construir el MVP definido en `alcance-func
 - [x] Validar que, al generar la llave, los partidos iniciales tengan equipos sin fuentes y los posteriores fuentes con equipos aún nulos.
 - [x] Validar la coherencia condicional de `penalty_winner_team_id` en resultados y pronósticos.
 - [x] Impedir cambios en inscripciones, fases y cruces después de generar la llave.
-- [ ] Validar la coherencia de fechas de torneos y partidos.
-- [ ] Derivar `FINISHED` del resultado de la final y detectar torneos atrasados después de `ends_at`.
+- [x] Validar la coherencia de fechas de torneos y partidos.
+- [x] Derivar `FINISHED` del resultado de la final y detectar torneos atrasados después de `ends_at`.
 - [ ] Definir valores iniciales de roles y estados.
 - [ ] Agregar campos de auditoría.
 - [ ] Impedir desde PostgreSQL modificar o eliminar resultados oficiales publicados.

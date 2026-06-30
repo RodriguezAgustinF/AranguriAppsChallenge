@@ -99,6 +99,13 @@ export type Database = {
             foreignKeyName: "matches_tournament_id_fkey";
             columns: ["tournament_id"];
             isOneToOne: false;
+            referencedRelation: "tournament_overview";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "matches_tournament_id_fkey";
+            columns: ["tournament_id"];
+            isOneToOne: false;
             referencedRelation: "tournaments";
             referencedColumns: ["id"];
           },
@@ -204,6 +211,13 @@ export type Database = {
             foreignKeyName: "stages_tournament_id_fkey";
             columns: ["tournament_id"];
             isOneToOne: false;
+            referencedRelation: "tournament_overview";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "stages_tournament_id_fkey";
+            columns: ["tournament_id"];
+            isOneToOne: false;
             referencedRelation: "tournaments";
             referencedColumns: ["id"];
           },
@@ -260,6 +274,13 @@ export type Database = {
             foreignKeyName: "tournament_scores_tournament_id_fkey";
             columns: ["tournament_id"];
             isOneToOne: false;
+            referencedRelation: "tournament_overview";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "tournament_scores_tournament_id_fkey";
+            columns: ["tournament_id"];
+            isOneToOne: false;
             referencedRelation: "tournaments";
             referencedColumns: ["id"];
           },
@@ -306,6 +327,13 @@ export type Database = {
             foreignKeyName: "tournament_teams_tournament_id_fkey";
             columns: ["tournament_id"];
             isOneToOne: false;
+            referencedRelation: "tournament_overview";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "tournament_teams_tournament_id_fkey";
+            columns: ["tournament_id"];
+            isOneToOne: false;
             referencedRelation: "tournaments";
             referencedColumns: ["id"];
           },
@@ -346,7 +374,22 @@ export type Database = {
       };
     };
     Views: {
-      [_ in never]: never;
+      tournament_overview: {
+        Row: {
+          bracket_generated_at: string | null;
+          champion_team_id: string | null;
+          created_at: string | null;
+          description: string | null;
+          ends_at: string | null;
+          id: string | null;
+          is_overdue: boolean | null;
+          name: string | null;
+          starts_at: string | null;
+          status: string | null;
+          team_count: number | null;
+        };
+        Relationships: [];
+      };
     };
     Functions: {
       [_ in never]: never;

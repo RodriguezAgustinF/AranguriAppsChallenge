@@ -137,6 +137,61 @@ Completada el 29 de junio de 2026.
 - PostgreSQL rechazó dos posiciones iguales dentro del mismo torneo.
 - Se recreó la base desde cero y se ejecutaron todas las pruebas pgTAP y `db lint`.
 
+## 2026-06-30 — Estado derivado, atraso y campeón
+
+### Tarea
+
+Derivar `FINISHED` del resultado de la final y detectar torneos atrasados después de `ends_at`.
+
+### Estado
+
+Completada el 30 de junio de 2026.
+
+### Decisiones
+
+- `tournament_overview` es una vista `security_invoker` que añade `status`, `is_overdue` y `champion_team_id` sin persistir valores redundantes.
+- `UPCOMING` significa que la hora de PostgreSQL todavía es anterior a `starts_at`.
+- `IN_PROGRESS` comienza al alcanzar `starts_at` y continúa mientras la final no tenga resultado, incluso después de `ends_at`.
+- `FINISHED` depende exclusivamente de `result_published_at` en el partido de la fase `FINAL`.
+- `is_overdue` es verdadero cuando se alcanzó `ends_at` y la final sigue sin resultado.
+- El campeón se deriva del marcador de la final y, en caso de empate, de `penalty_winner_team_id`.
+- La vista no usa tareas programadas ni una columna de estado que pueda quedar desactualizada.
+
+### Verificación
+
+- Se probaron torneos próximos, en curso, atrasados y finalizados.
+- Se comprobó que un torneo atrasado continúa `IN_PROGRESS`.
+- Se comprobó que el resultado de la final produce `FINISHED` y el campeón correcto.
+- Se recreó la base desde cero, se regeneraron los tipos TypeScript y se ejecutaron todas las pruebas, `db lint` y el build.
+
+## 2026-06-30 — Coherencia temporal
+
+### Tarea
+
+Validar la coherencia de fechas de torneos y partidos.
+
+### Estado
+
+Completada el 30 de junio de 2026.
+
+### Decisiones
+
+- Todo torneo cumple `starts_at < ends_at` y debe comenzar en el futuro al crearse o reprogramarse.
+- Las fechas de un torneo que ya comenzó no pueden modificarse.
+- Un partido programado cumple `tournament.starts_at <= match.starts_at < tournament.ends_at`; el final del torneo es un límite exclusivo.
+- Toda nueva programación debe quedar estrictamente en el futuro según `clock_timestamp()` de PostgreSQL.
+- Un partido que ya comenzó no puede reprogramarse.
+- Modificar el intervalo del torneo no puede dejar fuera a partidos que ya estaban programados.
+- Las reglas temporales usan la hora del servidor de base de datos, no una fecha enviada por el navegador.
+
+### Verificación
+
+- Se rechazaron intervalos invertidos y torneos o partidos iniciados en el pasado.
+- Se rechazaron partidos antes del torneo y exactamente en su límite final.
+- Se aceptó un partido dentro del intervalo.
+- Se rechazó acortar un torneo dejando fuera un partido programado.
+- Se recreó la base desde cero y se ejecutaron todas las pruebas pgTAP y `db lint`.
+
 ## 2026-06-30 — Inmutabilidad de la llave generada
 
 ### Tarea
