@@ -59,8 +59,8 @@ Backlog ordenado desde el inicio para construir el MVP definido en `alcance-func
 
 ## 5. Seguridad y RLS
 
-- [ ] Habilitar RLS en todas las tablas expuestas.
-- [ ] Permitir consultar torneos, equipos y partidos disponibles.
+- [x] Habilitar RLS en todas las tablas expuestas.
+- [x] Permitir consultar torneos, equipos y partidos disponibles.
 - [ ] Permitir que cada usuario consulte sus pronósticos.
 - [ ] Permitir crear o editar pronósticos propios solo antes del partido.
 - [ ] Impedir escrituras sobre pronósticos ajenos.
