@@ -15,7 +15,7 @@ Para decisiones arquitectónicas estables y transversales, consultar [Decisiones
 | 5 | Seguridad y RLS | En curso | [05-seguridad-y-rls.md](./registros-de-decisiones/05-seguridad-y-rls.md) |
 | 6 | Autenticación y autorización | En curso | [06-autenticacion-y-autorizacion.md](./registros-de-decisiones/06-autenticacion-y-autorizacion.md) |
 | 7 | Interfaz base | Pendiente | Se creará al comenzar |
-| 8 | Torneos | Pendiente | Se creará al comenzar |
+| 8 | Torneos | En curso | [08-torneos.md](./registros-de-decisiones/08-torneos.md) |
 | 9 | Equipos | En curso | [09-equipos.md](./registros-de-decisiones/09-equipos.md) |
 | 10 | Inscripciones, sorteo y llave | Pendiente | Se creará al comenzar |
 | 11 | Partidos | Pendiente | Se creará al comenzar |

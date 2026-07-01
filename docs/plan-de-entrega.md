@@ -11,7 +11,7 @@ Permitir que un administrador prepare y ejecute un torneo de eliminación direct
 - [x] Iniciar y cerrar sesión con una cuenta `ADMIN` aprovisionada manualmente.
 - [x] Proteger las pantallas y operaciones administrativas.
 - [x] Crear, consultar, editar y eliminar equipos con su imagen.
-- [ ] Crear, consultar, editar y eliminar torneos antes de su inicio.
+- [x] Crear, consultar, editar y eliminar torneos antes de su inicio.
 - [ ] Inscribir y quitar equipos antes de generar la llave.
 - [ ] Generar una única llave aleatoria y completa.
 - [ ] Programar los partidos generados.
