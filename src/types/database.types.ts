@@ -416,11 +416,33 @@ export type Database = {
       };
     };
     Functions: {
+      calculate_prediction_points: {
+        Args: {
+          away_team_id: string;
+          home_team_id: string;
+          official_away_score: number;
+          official_home_score: number;
+          official_penalty_winner_team_id: string;
+          predicted_away_score: number;
+          predicted_home_score: number;
+          predicted_penalty_winner_team_id: string;
+        };
+        Returns: number;
+      };
       generate_bracket: {
         Args: { target_tournament_id: string };
         Returns: undefined;
       };
       is_admin: { Args: never; Returns: boolean };
+      publish_match_result: {
+        Args: {
+          official_away_score: number;
+          official_home_score: number;
+          official_penalty_winner_team_id?: string;
+          target_match_id: string;
+        };
+        Returns: Json;
+      };
     };
     Enums: {
       stage_type: "ROUND_OF_32" | "ROUND_OF_16" | "QUARTER_FINAL" | "SEMI_FINAL" | "FINAL";

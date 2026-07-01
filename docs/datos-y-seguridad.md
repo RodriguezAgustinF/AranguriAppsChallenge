@@ -305,7 +305,6 @@ Cada torneo constituye una competencia aislada.
 * description
 * teamCount
 * startsAt
-* endsAt
 * bracketGeneratedAt (nullable)
 * createdAt
 

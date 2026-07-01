@@ -48,7 +48,7 @@ Un torneo podrá encontrarse en uno de estos estados lógicos:
 * `IN_PROGRESS`: la hora del servidor es igual o posterior a `starts_at` y la final todavía no posee un resultado oficial.
 * `FINISHED`: la final posee un resultado oficial y, por lo tanto, existe un campeón.
 
-La transición será lineal: `UPCOMING` → `IN_PROGRESS` → `FINISHED`. `ends_at` será el límite planificado para programar inicios de partidos, pero no determinará el estado final. Si ese instante vence sin un campeón, el torneo continuará `IN_PROGRESS` y la interfaz administrativa deberá señalarlo como atrasado. Un torneo solo podrá editarse en `UPCOMING` y solo podrá eliminarse en ese estado si además no posee pronósticos.
+La transición será lineal: `UPCOMING` → `IN_PROGRESS` → `FINISHED`. No se estima una fecha de finalización: el torneo continúa `IN_PROGRESS` hasta que la final tenga un resultado oficial. Un torneo solo podrá editarse en `UPCOMING` y solo podrá eliminarse en ese estado si además no posee pronósticos.
 
 Un partido podrá encontrarse en uno de estos estados lógicos:
 
@@ -75,17 +75,15 @@ La zona horaria de presentación del MVP será `America/Argentina/Buenos_Aires`.
 
 Reglas para torneos:
 
-* `starts_at` y `ends_at` son obligatorios y deben representar instantes válidos.
-* `starts_at` debe ser estrictamente anterior a `ends_at`.
-* `ends_at` representa el límite exclusivo para el inicio programado de los partidos, no la finalización efectiva del torneo.
+* `starts_at` es obligatorio y debe representar un instante válido.
 * Al crear un torneo, `starts_at` debe ser estrictamente posterior a la hora actual del servidor.
 * Solo puede editarse o eliminarse mientras `server_now < starts_at`.
-* Una edición debe conservar `starts_at < ends_at` y mantener todos los partidos existentes dentro del nuevo intervalo.
+* Una edición de `starts_at` debe mantener todos los partidos existentes en el torneo.
 
 Reglas para partidos:
 
 * `starts_at` será nulo al generar la llave y, cuando se programe, deberá representar un instante válido.
-* Cuando exista, debe cumplirse `tournament.starts_at <= match.starts_at < tournament.ends_at`.
+* Cuando exista, debe cumplirse `tournament.starts_at <= match.starts_at`.
 * Al programar o reprogramar un partido, su nuevo `starts_at` debe ser estrictamente posterior a la hora actual del servidor.
 * Solo puede programarse o reprogramarse mientras todavía no haya comenzado; no puede eliminarse independientemente de la llave.
 * Puede publicarse un resultado únicamente cuando `server_now >= match.starts_at` y aún no existe un resultado oficial.

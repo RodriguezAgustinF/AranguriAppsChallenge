@@ -340,6 +340,37 @@ h2 {
 .schedule-form span {
   grid-column: 1 / -1;
 }
+.result-form {
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: 1fr 1fr;
+}
+.result-form label {
+  display: grid;
+  gap: 0.25rem;
+}
+.result-form input {
+  min-width: 0;
+  width: 100%;
+}
+.result-form .penalty-field,
+.result-form button,
+.result-form > .form-error,
+.result-form > .form-success {
+  grid-column: 1 / -1;
+}
+.published-result {
+  display: grid;
+  gap: 0.2rem;
+}
+.published-result > strong {
+  color: var(--primary-dark);
+  font-size: 1.25rem;
+}
+.published-result span {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
 
 @media (max-width: 48rem) {
   .management-grid {

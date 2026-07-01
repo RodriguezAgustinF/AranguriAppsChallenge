@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { enrollTeam, generateBracket, removeEnrollment } from "@/actions/enrollments";
 import { MatchScheduleForm } from "@/components/matches/match-schedule-form";
+import { MatchResultForm } from "@/components/matches/match-result-form";
 import { createClient } from "@/lib/supabase/server";
 
 const stageNames = {
@@ -127,21 +128,57 @@ export default async function TournamentDetail({ params }: { params: Promise<{ i
                 <div className="match-list">
                   {matches
                     ?.filter((match) => match.stage_id === stage.id)
-                    .map((match) => (
-                      <article className="match-schedule-card" key={match.id}>
-                        <strong>Partido {match.bracket_position}</strong>
-                        <span>
-                          {participantName(match.home_team_id, match.home_source_match_id)} vs.{" "}
-                          {participantName(match.away_team_id, match.away_source_match_id)}
-                        </span>
-                        <MatchScheduleForm
-                          matchId={match.id}
-                          startsAt={match.starts_at}
-                          tournamentId={id}
-                          tournamentStartsAt={tournament.starts_at}
-                        />
-                      </article>
-                    ))}
+                    .map((match) => {
+                      const homeTeam = match.home_team_id
+                        ? teams?.find((team) => team.id === match.home_team_id)
+                        : undefined;
+                      const awayTeam = match.away_team_id
+                        ? teams?.find((team) => team.id === match.away_team_id)
+                        : undefined;
+                      const hasStarted = Boolean(
+                        match.starts_at && new Date(match.starts_at) <= new Date(),
+                      );
+                      return (
+                        <article className="match-schedule-card" key={match.id}>
+                          <strong>Partido {match.bracket_position}</strong>
+                          <span className="match-participants">
+                            {participantName(match.home_team_id, match.home_source_match_id)} vs.{" "}
+                            {participantName(match.away_team_id, match.away_source_match_id)}
+                          </span>
+                          {match.result_published_at ? (
+                            <div className="published-result">
+                              <strong>
+                                {match.home_score} - {match.away_score}
+                              </strong>
+                              {match.penalty_winner_team_id ? (
+                                <span>
+                                  Ganó por penales: {teamNames.get(match.penalty_winner_team_id)}
+                                </span>
+                              ) : null}
+                              <span>Resultado oficial definitivo</span>
+                            </div>
+                          ) : hasStarted && homeTeam && awayTeam ? (
+                            <MatchResultForm
+                              awayTeam={awayTeam}
+                              homeTeam={homeTeam}
+                              matchId={match.id}
+                              tournamentId={id}
+                            />
+                          ) : hasStarted ? (
+                            <span className="muted-text">
+                              Esperando que se resuelvan ambos participantes.
+                            </span>
+                          ) : (
+                            <MatchScheduleForm
+                              matchId={match.id}
+                              startsAt={match.starts_at}
+                              tournamentId={id}
+                              tournamentStartsAt={tournament.starts_at}
+                            />
+                          )}
+                        </article>
+                      );
+                    })}
                 </div>
               </section>
             ))}

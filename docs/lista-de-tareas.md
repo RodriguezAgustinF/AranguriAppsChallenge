@@ -53,7 +53,7 @@ Backlog ordenado desde el inicio para construir el MVP definido en `alcance-func
 - [x] Validar la coherencia condicional de `penalty_winner_team_id` en resultados y pronósticos.
 - [x] Impedir cambios en inscripciones, fases y cruces después de generar la llave.
 - [x] Validar la coherencia de fechas de torneos y partidos.
-- [x] Derivar `FINISHED` del resultado de la final y detectar torneos atrasados después de `ends_at`.
+- [x] Derivar `FINISHED` exclusivamente del resultado de la final.
 - [x] Definir valores iniciales de roles y estados.
 - [x] Agregar campos de auditoría.
 - [x] Impedir desde PostgreSQL modificar o eliminar resultados oficiales publicados.
@@ -161,16 +161,16 @@ Backlog ordenado desde el inicio para construir el MVP definido en `alcance-func
 
 ## 14. Resultados, avance y puntuación
 
-- [ ] Implementar una función pura de cálculo de puntos.
-- [ ] Determinar el equipo que avanza a partir del marcador y los penales.
-- [ ] Otorgar 0 puntos al fallar el equipo que avanza.
-- [ ] Otorgar 3 puntos al acertar el equipo que avanza sin marcador exacto.
-- [ ] Otorgar 6 puntos al acertar el marcador exacto y el ganador por penales cuando corresponda.
+- [x] Implementar una función pura de cálculo de puntos.
+- [x] Determinar el equipo que avanza a partir del marcador y los penales.
+- [x] Otorgar 0 puntos al fallar el equipo que avanza.
+- [x] Otorgar 3 puntos al acertar el equipo que avanza sin marcador exacto.
+- [x] Otorgar 6 puntos al acertar el marcador exacto y el ganador por penales cuando corresponda.
 - [ ] Crear pruebas unitarias para todos los casos.
 - [ ] Implementar la publicación administrativa del resultado de un partido finalizado.
 - [ ] Verificar que no exista un resultado previo.
-- [ ] Validar el ganador por penales cuando el resultado esté empatado.
-- [ ] Publicar el resultado, actualizar puntajes y avanzar al ganador en una operación atómica.
+- [x] Validar el ganador por penales cuando el resultado esté empatado.
+- [x] Publicar el resultado, actualizar puntajes y avanzar al ganador en una operación atómica.
 - [ ] Marcar al ganador de la final como campeón.
 - [ ] Impedir modificaciones o eliminaciones posteriores desde servidor, RLS y PostgreSQL.
 - [ ] Crear una confirmación explícita de que el resultado será definitivo.
