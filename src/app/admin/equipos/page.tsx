@@ -9,8 +9,13 @@ export default async function TeamsPage() {
 
   return (
     <main className="content-page">
-      <p className="eyebrow">Catálogo</p>
-      <h1>Equipos</h1>
+      <header className="admin-page-heading">
+        <p className="eyebrow">Catálogo</p>
+        <h1>Equipos</h1>
+        <p className="muted-text">
+          Administrá los participantes y las imágenes que los identifican.
+        </p>
+      </header>
       <div className="management-grid">
         <section className="panel compact-panel">
           <h2>Nuevo equipo</h2>

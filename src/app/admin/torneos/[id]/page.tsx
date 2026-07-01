@@ -54,11 +54,13 @@ export default async function TournamentDetail({ params }: { params: Promise<{ i
   };
   return (
     <main className="content-page">
-      <p className="eyebrow">Inscripciones</p>
-      <h1>{tournament.name}</h1>
-      <p className="muted-text">
-        {enrolled.length} de {tournament.team_count} equipos · {remaining} lugares disponibles
-      </p>
+      <header className="admin-page-heading tournament-admin-heading">
+        <p className="eyebrow">Gestión del torneo</p>
+        <h1>{tournament.name}</h1>
+        <p className="muted-text">
+          {enrolled.length} de {tournament.team_count} equipos · {remaining} lugares disponibles
+        </p>
+      </header>
       <div className="management-grid">
         <section className="panel compact-panel">
           <h2>Inscribir equipo</h2>

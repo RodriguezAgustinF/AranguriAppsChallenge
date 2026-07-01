@@ -1,6 +1,6 @@
 # Plan de entrega — 1 de julio de 2026
 
-Este documento prioriza una demostración administrativa funcional para la entrega. No reemplaza ni elimina el alcance final descrito en `alcance-funcional.md` y `lista-de-tareas.md`; las funciones pospuestas se retomarán después.
+Este documento define la versión entregable actual como un **gestor de torneos de eliminación directa**. El Prode descrito en `alcance-funcional.md` y `lista-de-tareas.md` queda como evolución posterior y no forma parte de la presentación de esta versión.
 
 ## Objetivo de la entrega
 
@@ -22,13 +22,13 @@ Permitir que un administrador prepare y ejecute un torneo de eliminación direct
 
 La ejecución manual está detallada en [Guía de demostración](./guia-de-demostracion.md). El flujo transaccional completo también se verifica con `npm run db:test:delivery`.
 
-## Pospuesto después de la entrega
+## Evolución futura: Prode
 
 - registro público de usuarios;
 - pronósticos y participación;
 - cálculo de puntos y ranking;
 - experiencia completa del usuario común;
-- recuperación de contraseña, que continúa fuera del MVP final.
+- recuperación de contraseña, que continúa fuera de esta versión.
 
 ## Criterio de aceptación
 

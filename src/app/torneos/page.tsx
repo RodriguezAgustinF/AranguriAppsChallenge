@@ -17,9 +17,11 @@ export default async function PublicTournamentsPage() {
 
   return (
     <main className="content-page public-content">
-      <p className="eyebrow">Competencias</p>
-      <h1>Torneos</h1>
-      <p className="muted-text">Consultá los cruces, horarios y resultados de cada llave.</p>
+      <header className="page-masthead">
+        <p className="eyebrow">Competencias</p>
+        <h1>Torneos</h1>
+        <p>Consultá los cruces, horarios y resultados de cada llave.</p>
+      </header>
       <div className="public-tournament-grid">
         {tournaments?.map((tournament) => {
           const status = tournament.status ?? "UPCOMING";

@@ -1,6 +1,6 @@
 # Guía de demostración de la entrega
 
-Esta guía recorre el camino crítico administrativo sin depender de pronósticos ni del ranking, que continúan pospuestos en el plan de entrega.
+Esta guía recorre el gestor de torneos que compone la entrega actual. Los pronósticos y el ranking pertenecerán a la evolución futura hacia un Prode.
 
 ## Preparación
 

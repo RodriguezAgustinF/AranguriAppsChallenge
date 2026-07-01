@@ -8,8 +8,11 @@ export default async function TournamentsPage() {
   const { data: tournaments } = await supabase.from("tournaments").select("*").order("starts_at");
   return (
     <main className="content-page">
-      <p className="eyebrow">Competencias</p>
-      <h1>Torneos</h1>
+      <header className="admin-page-heading">
+        <p className="eyebrow">Competencias</p>
+        <h1>Torneos</h1>
+        <p className="muted-text">Creá una competencia y continuá su gestión desde la lista.</p>
+      </header>
       <div className="management-grid">
         <section className="panel compact-panel">
           <h2>Nuevo torneo</h2>
