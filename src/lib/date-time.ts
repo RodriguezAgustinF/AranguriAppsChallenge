@@ -11,3 +11,14 @@ export function localDateTimeToIso(value: string) {
   const date = new Date(value);
   return Number.isNaN(date.valueOf()) ? "" : date.toISOString();
 }
+
+const argentinaDateTimeFormatter = new Intl.DateTimeFormat("es-AR", {
+  dateStyle: "short",
+  hour12: false,
+  timeStyle: "short",
+  timeZone: "America/Argentina/Buenos_Aires",
+});
+
+export function formatDateTime24Hour(value: string) {
+  return argentinaDateTimeFormatter.format(new Date(value));
+}
