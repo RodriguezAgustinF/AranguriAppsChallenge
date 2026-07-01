@@ -18,7 +18,9 @@ Permitir que un administrador prepare y ejecute un torneo de eliminación direct
 - [x] Publicar resultados oficiales definitivos, incluyendo penales.
 - [x] Avanzar automáticamente al ganador hasta obtener un campeón.
 - [x] Mostrar una vista pública básica de torneos, partidos y llave.
-- [ ] Preparar datos de demostración y ejecutar el flujo completo.
+- [x] Preparar datos de demostración y ejecutar el flujo completo.
+
+La ejecución manual está detallada en [Guía de demostración](./guia-de-demostracion.md). El flujo transaccional completo también se verifica con `npm run db:test:delivery`.
 
 ## Pospuesto después de la entrega
 

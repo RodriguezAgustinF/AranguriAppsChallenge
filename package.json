@@ -21,6 +21,7 @@
     "db:reset": "supabase db reset",
     "db:lint": "supabase db lint --local",
     "db:test": "supabase test db",
+    "db:test:delivery": "supabase test db supabase/tests/admin_delivery_flow_test.sql",
     "db:migration:new": "supabase migration new",
     "db:types": "node scripts/generate-database-types.mjs --linked",
     "db:types:local": "node scripts/generate-database-types.mjs --local",
