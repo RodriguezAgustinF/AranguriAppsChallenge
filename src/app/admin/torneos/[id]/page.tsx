@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { enrollTeam, removeEnrollment } from "@/actions/enrollments";
+import { enrollTeam, generateBracket, removeEnrollment } from "@/actions/enrollments";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function TournamentDetail({ params }: { params: Promise<{ id: string }> }) {
@@ -68,6 +68,19 @@ export default async function TournamentDetail({ params }: { params: Promise<{ i
           </div>
         </section>
       </div>
+      <section className="panel bracket-action">
+        <h2>Generar llave</h2>
+        <p className="muted-text">El sorteo es aleatorio, único y definitivo.</p>
+        <form action={generateBracket}>
+          <input type="hidden" name="tournamentId" value={id} />
+          <button
+            className="primary-button"
+            disabled={remaining !== 0 || Boolean(tournament.bracket_generated_at)}
+          >
+            {tournament.bracket_generated_at ? "Llave generada" : "Sortear equipos y generar llave"}
+          </button>
+        </form>
+      </section>
     </main>
   );
 }

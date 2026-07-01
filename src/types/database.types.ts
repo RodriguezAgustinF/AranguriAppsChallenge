@@ -365,7 +365,7 @@ export type Database = {
           bracket_generated_at: string | null;
           created_at: string;
           description: string | null;
-          ends_at: string;
+          ends_at: string | null;
           id: string;
           name: string;
           starts_at: string;
@@ -376,7 +376,7 @@ export type Database = {
           bracket_generated_at?: string | null;
           created_at?: string;
           description?: string | null;
-          ends_at: string;
+          ends_at?: string | null;
           id?: string;
           name: string;
           starts_at: string;
@@ -387,7 +387,7 @@ export type Database = {
           bracket_generated_at?: string | null;
           created_at?: string;
           description?: string | null;
-          ends_at?: string;
+          ends_at?: string | null;
           id?: string;
           name?: string;
           starts_at?: string;
@@ -406,16 +406,20 @@ export type Database = {
           description: string | null;
           ends_at: string | null;
           id: string | null;
-          is_overdue: boolean | null;
           name: string | null;
           starts_at: string | null;
           status: string | null;
           team_count: number | null;
+          updated_at: string | null;
         };
         Relationships: [];
       };
     };
     Functions: {
+      generate_bracket: {
+        Args: { target_tournament_id: string };
+        Returns: undefined;
+      };
       is_admin: { Args: never; Returns: boolean };
     };
     Enums: {

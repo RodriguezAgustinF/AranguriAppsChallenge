@@ -1,5 +1,5 @@
 begin;
-select plan(7);
+select plan(8);
 
 select throws_ok(
   $$
@@ -7,7 +7,7 @@ select throws_ok(
     values ('Reversed dates', 4, now() + interval '2 days', now() + interval '1 day')
   $$,
   '23514',
-  'new row for relation "tournaments" violates check constraint "tournaments_date_range_valid"',
+  'new row for relation "tournaments" violates check constraint "tournaments_optional_end_valid"',
   'tournament end must be after its start'
 );
 
@@ -46,11 +46,12 @@ values
 insert into public.matches (id, tournament_id, stage_id, bracket_position, home_team_id, away_team_id)
 values ('c3000000-0000-0000-0000-000000000001', 'c0000000-0000-0000-0000-000000000001', 'c1000000-0000-0000-0000-000000000001', 1, 'c2000000-0000-0000-0000-000000000001', 'c2000000-0000-0000-0000-000000000002');
 
-select throws_ok($$update public.matches set starts_at = now() + interval '12 hours' where id = 'c3000000-0000-0000-0000-000000000001'$$, '23514', 'match start must be within the tournament date range', 'a match cannot start before its tournament');
-select throws_ok($$update public.matches set starts_at = now() + interval '2 days' where id = 'c3000000-0000-0000-0000-000000000001'$$, '23514', 'match start must be within the tournament date range', 'the tournament end is an exclusive match boundary');
+select throws_ok($$update public.matches set starts_at = now() + interval '12 hours' where id = 'c3000000-0000-0000-0000-000000000001'$$, '23514', 'match start must not be before the tournament', 'a match cannot start before its tournament');
+select lives_ok($$update public.matches set starts_at = now() + interval '2 days' where id = 'c3000000-0000-0000-0000-000000000001'$$, 'a match may be scheduled after a legacy end date');
 select throws_ok($$update public.matches set starts_at = now() - interval '1 minute' where id = 'c3000000-0000-0000-0000-000000000001'$$, '23514', 'match start must be in the future', 'a match cannot be scheduled in the past');
 select lives_ok($$update public.matches set starts_at = now() + interval '36 hours' where id = 'c3000000-0000-0000-0000-000000000001'$$, 'a match can be scheduled inside the tournament range');
-select throws_ok($$update public.tournaments set ends_at = now() + interval '30 hours' where id = 'c0000000-0000-0000-0000-000000000001'$$, '23514', 'tournament dates must contain all scheduled matches', 'tournament edits cannot exclude a scheduled match');
+select lives_ok($$update public.tournaments set ends_at = null where id = 'c0000000-0000-0000-0000-000000000001'$$, 'the obsolete end can be removed');
+select throws_ok($$update public.tournaments set starts_at = now() + interval '2 days' where id = 'c0000000-0000-0000-0000-000000000001'$$, '23514', 'tournament start must not be after a scheduled match', 'tournament start cannot exclude a scheduled match');
 
 select * from finish();
 rollback;

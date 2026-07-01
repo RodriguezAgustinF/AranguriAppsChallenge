@@ -21,16 +21,14 @@ insert into public.tournaments (
   name,
   description,
   team_count,
-  starts_at,
-  ends_at
+  starts_at
 )
 values (
   'd1000000-0000-0000-0000-000000000001',
   'Copa de desarrollo',
   'Torneo local de cuatro equipos para desarrollar y probar los flujos iniciales.',
   4,
-  now() + interval '30 days',
-  now() + interval '37 days'
+  now() + interval '30 days'
 )
 on conflict (id) do nothing;
 

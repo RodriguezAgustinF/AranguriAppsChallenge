@@ -12,22 +12,16 @@ function parseTournament(formData: FormData) {
   const description = String(formData.get("description") ?? "").trim() || null;
   const teamCount = Number(formData.get("teamCount"));
   const startsAt = new Date(String(formData.get("startsAt") ?? ""));
-  const endsAt = new Date(String(formData.get("endsAt") ?? ""));
   if (name.length < 3 || name.length > 100)
     return { error: "El nombre debe tener entre 3 y 100 caracteres." };
   if (![4, 8, 16, 32].includes(teamCount)) return { error: "Elegí una capacidad válida." };
-  if (
-    Number.isNaN(startsAt.valueOf()) ||
-    Number.isNaN(endsAt.valueOf()) ||
-    startsAt <= new Date() ||
-    endsAt <= startsAt
-  ) {
-    return { error: "Las fechas deben ser futuras y la finalización posterior al inicio." };
+  if (Number.isNaN(startsAt.valueOf()) || startsAt <= new Date()) {
+    return { error: "La fecha de inicio debe ser futura." };
   }
   return {
     data: {
       description,
-      ends_at: endsAt.toISOString(),
+      ends_at: null,
       name,
       starts_at: startsAt.toISOString(),
       team_count: teamCount,

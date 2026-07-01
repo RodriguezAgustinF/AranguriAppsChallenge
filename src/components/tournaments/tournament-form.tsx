@@ -5,7 +5,6 @@ import { createTournament, updateTournament, type TournamentState } from "@/acti
 
 type Tournament = {
   description: string | null;
-  ends_at: string;
   id: string;
   name: string;
   starts_at: string;
@@ -41,15 +40,6 @@ export function TournamentForm({ tournament }: { tournament?: Tournament }) {
           name="startsAt"
           type="datetime-local"
           defaultValue={localDate(tournament?.starts_at)}
-          required
-        />
-      </div>
-      <div className="field-group">
-        <label>Finalización estimada</label>
-        <input
-          name="endsAt"
-          type="datetime-local"
-          defaultValue={localDate(tournament?.ends_at)}
           required
         />
       </div>

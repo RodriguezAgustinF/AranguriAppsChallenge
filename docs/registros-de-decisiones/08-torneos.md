@@ -21,3 +21,10 @@ Implementada la primera versión funcional de alta, listado, edición y eliminac
 - Lint, TypeScript, formato y build de producción finalizaron correctamente.
 - Next.js registró `/admin/torneos` como ruta dinámica protegida.
 - Probar el flujo con la cuenta `ADMIN` de desarrollo.
+
+## 2026-06-30 — Finalización derivada de la final
+
+- La fecha de finalización se retiró del formulario porque una llave no tiene duración predecible.
+- `ends_at` queda nullable para migrar sin destruir datos anteriores, pero los torneos nuevos lo guardan nulo.
+- Los partidos pueden programarse desde `starts_at` sin un límite final artificial.
+- `FINISHED` se deriva del resultado de la final y se retiró `is_overdue` de la vista.

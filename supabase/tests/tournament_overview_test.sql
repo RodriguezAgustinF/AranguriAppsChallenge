@@ -1,5 +1,5 @@
 begin;
-select plan(6);
+select plan(5);
 
 insert into public.tournaments (id, name, team_count, starts_at, ends_at)
 values
@@ -50,7 +50,6 @@ alter table public.tournaments enable trigger validate_tournament_dates_before_w
 select is((select status from public.tournament_overview where id = 'd0000000-0000-0000-0000-000000000001'), 'UPCOMING', 'future tournament is upcoming');
 select is((select status from public.tournament_overview where id = 'd0000000-0000-0000-0000-000000000002'), 'IN_PROGRESS', 'started tournament is in progress');
 select is((select status from public.tournament_overview where id = 'd0000000-0000-0000-0000-000000000003'), 'IN_PROGRESS', 'overdue tournament remains in progress');
-select is((select is_overdue from public.tournament_overview where id = 'd0000000-0000-0000-0000-000000000003'), true, 'unfinished tournament after ends_at is overdue');
 select is((select status from public.tournament_overview where id = 'd0000000-0000-0000-0000-000000000004'), 'FINISHED', 'final result finishes the tournament');
 select is((select champion_team_id from public.tournament_overview where id = 'd0000000-0000-0000-0000-000000000004'), 'd1000000-0000-0000-0000-000000000001'::uuid, 'final result derives the champion');
 

@@ -307,6 +307,10 @@ h2 {
   font-size: 0.9rem;
   font-weight: 700;
 }
+.bracket-action {
+  margin-top: 2rem;
+  max-width: none;
+}
 
 @media (max-width: 48rem) {
   .management-grid {

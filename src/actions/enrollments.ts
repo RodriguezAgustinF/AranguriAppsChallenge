@@ -24,3 +24,11 @@ export async function removeEnrollment(formData: FormData) {
     .eq("tournament_id", tournamentId);
   revalidatePath(`/admin/torneos/${tournamentId}`);
 }
+
+export async function generateBracket(formData: FormData) {
+  await requireAdmin();
+  const tournamentId = String(formData.get("tournamentId") ?? "");
+  const supabase = await createClient();
+  await supabase.rpc("generate_bracket", { target_tournament_id: tournamentId });
+  revalidatePath(`/admin/torneos/${tournamentId}`);
+}
