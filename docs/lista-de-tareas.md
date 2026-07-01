@@ -2,6 +2,8 @@
 
 Backlog ordenado desde el inicio para construir el MVP definido en `alcance-funcional.md` y en la documentación enlazada desde `arquitectura.md`.
 
+> Para la entrega del 1 de julio de 2026, seguir primero el [plan de entrega administrativo](./plan-de-entrega.md). Este recorte reorganiza prioridades sin eliminar el alcance final de esta lista.
+
 ## 1. Definiciones iniciales
 
 - [x] Confirmar versiones de Node.js, Next.js y dependencias principales.
@@ -51,7 +53,7 @@ Backlog ordenado desde el inicio para construir el MVP definido en `alcance-func
 - [x] Validar la coherencia condicional de `penalty_winner_team_id` en resultados y pronósticos.
 - [x] Impedir cambios en inscripciones, fases y cruces después de generar la llave.
 - [x] Validar la coherencia de fechas de torneos y partidos.
-- [x] Derivar `FINISHED` del resultado de la final y detectar torneos atrasados después de `ends_at`.
+- [x] Derivar `FINISHED` exclusivamente del resultado de la final.
 - [x] Definir valores iniciales de roles y estados.
 - [x] Agregar campos de auditoría.
 - [x] Impedir desde PostgreSQL modificar o eliminar resultados oficiales publicados.
@@ -61,12 +63,12 @@ Backlog ordenado desde el inicio para construir el MVP definido en `alcance-func
 
 - [x] Habilitar RLS en todas las tablas expuestas.
 - [x] Permitir consultar torneos, equipos y partidos disponibles.
-- [ ] Permitir que cada usuario consulte sus pronósticos.
-- [ ] Permitir crear o editar pronósticos propios solo antes del partido.
+- [x] Permitir que cada usuario consulte sus pronósticos.
+- [x] Permitir crear o editar pronósticos propios solo antes del partido.
 - [ ] Impedir escrituras sobre pronósticos ajenos.
 - [ ] Permitir consultar rankings.
 - [ ] Impedir modificar puntajes directamente desde el cliente.
-- [ ] Restringir la administración al rol `ADMIN`.
+- [x] Restringir la administración al rol `ADMIN`.
 - [ ] Permitir lectura pública y restringir a `ADMIN` las escrituras del bucket `team-logos`.
 - [ ] Impedir que el cliente genere nuevamente la llave o elija participantes de partidos posteriores.
 - [ ] Impedir que el registro público asigne el rol `ADMIN`.
@@ -76,10 +78,10 @@ Backlog ordenado desde el inicio para construir el MVP definido en `alcance-func
 
 - [ ] Implementar registro público con rol fijo `USER`.
 - [ ] Crear automáticamente el perfil del usuario.
-- [ ] Implementar inicio y cierre de sesión.
-- [ ] Restaurar y refrescar sesiones.
-- [ ] Proteger rutas autenticadas y administrativas.
-- [ ] Crear helpers de servidor para obtener el usuario y validar su rol.
+- [x] Implementar inicio y cierre de sesión.
+- [x] Restaurar y refrescar sesiones.
+- [x] Proteger rutas autenticadas y administrativas.
+- [x] Crear helpers de servidor para obtener el usuario y validar su rol.
 - [ ] Documentar el alta manual en Supabase Auth y de su perfil `ADMIN`.
 - [ ] Crear una cuenta administrativa de desarrollo.
 - [ ] Verificar que el MVP no ofrezca recuperación de contraseña.
@@ -159,16 +161,16 @@ Backlog ordenado desde el inicio para construir el MVP definido en `alcance-func
 
 ## 14. Resultados, avance y puntuación
 
-- [ ] Implementar una función pura de cálculo de puntos.
-- [ ] Determinar el equipo que avanza a partir del marcador y los penales.
-- [ ] Otorgar 0 puntos al fallar el equipo que avanza.
-- [ ] Otorgar 3 puntos al acertar el equipo que avanza sin marcador exacto.
-- [ ] Otorgar 6 puntos al acertar el marcador exacto y el ganador por penales cuando corresponda.
+- [x] Implementar una función pura de cálculo de puntos.
+- [x] Determinar el equipo que avanza a partir del marcador y los penales.
+- [x] Otorgar 0 puntos al fallar el equipo que avanza.
+- [x] Otorgar 3 puntos al acertar el equipo que avanza sin marcador exacto.
+- [x] Otorgar 6 puntos al acertar el marcador exacto y el ganador por penales cuando corresponda.
 - [ ] Crear pruebas unitarias para todos los casos.
 - [ ] Implementar la publicación administrativa del resultado de un partido finalizado.
 - [ ] Verificar que no exista un resultado previo.
-- [ ] Validar el ganador por penales cuando el resultado esté empatado.
-- [ ] Publicar el resultado, actualizar puntajes y avanzar al ganador en una operación atómica.
+- [x] Validar el ganador por penales cuando el resultado esté empatado.
+- [x] Publicar el resultado, actualizar puntajes y avanzar al ganador en una operación atómica.
 - [ ] Marcar al ganador de la final como campeón.
 - [ ] Impedir modificaciones o eliminaciones posteriores desde servidor, RLS y PostgreSQL.
 - [ ] Crear una confirmación explícita de que el resultado será definitivo.
