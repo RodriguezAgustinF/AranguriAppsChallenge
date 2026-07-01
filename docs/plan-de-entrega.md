@@ -17,7 +17,7 @@ Permitir que un administrador prepare y ejecute un torneo de eliminación direct
 - [x] Programar los partidos generados.
 - [x] Publicar resultados oficiales definitivos, incluyendo penales.
 - [x] Avanzar automáticamente al ganador hasta obtener un campeón.
-- [ ] Mostrar una vista pública básica de torneos, partidos y llave.
+- [x] Mostrar una vista pública básica de torneos, partidos y llave.
 - [ ] Preparar datos de demostración y ejecutar el flujo completo.
 
 ## Pospuesto después de la entrega

@@ -18,10 +18,10 @@ Para decisiones arquitectónicas estables y transversales, consultar [Decisiones
 | 8 | Torneos | En curso | [08-torneos.md](./registros-de-decisiones/08-torneos.md) |
 | 9 | Equipos | En curso | [09-equipos.md](./registros-de-decisiones/09-equipos.md) |
 | 10 | Inscripciones, sorteo y llave | En curso | [10-inscripciones-sorteo-y-llave.md](./registros-de-decisiones/10-inscripciones-sorteo-y-llave.md) |
-| 11 | Partidos | Pendiente | Se creará al comenzar |
-| 12 | Consulta para usuarios | Pendiente | Se creará al comenzar |
+| 11 | Partidos | En curso | [11-partidos.md](./registros-de-decisiones/11-partidos.md) |
+| 12 | Consulta para usuarios | En curso | [12-consulta-para-usuarios.md](./registros-de-decisiones/12-consulta-para-usuarios.md) |
 | 13 | Pronósticos y participación | Pendiente | Se creará al comenzar |
-| 14 | Resultados, avance y puntuación | Pendiente | Se creará al comenzar |
+| 14 | Resultados, avance y puntuación | En curso | [14-resultados-avance-y-puntuacion.md](./registros-de-decisiones/14-resultados-avance-y-puntuacion.md) |
 | 15 | Ranking | Pendiente | Se creará al comenzar |
 | 16 | Errores y rendimiento | Pendiente | Se creará al comenzar |
 | 17 | Pruebas y calidad | Pendiente | Se creará al comenzar |
