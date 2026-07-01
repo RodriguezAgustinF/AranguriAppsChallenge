@@ -17,7 +17,7 @@ Para decisiones arquitectónicas estables y transversales, consultar [Decisiones
 | 7 | Interfaz base | Pendiente | Se creará al comenzar |
 | 8 | Torneos | En curso | [08-torneos.md](./registros-de-decisiones/08-torneos.md) |
 | 9 | Equipos | En curso | [09-equipos.md](./registros-de-decisiones/09-equipos.md) |
-| 10 | Inscripciones, sorteo y llave | Pendiente | Se creará al comenzar |
+| 10 | Inscripciones, sorteo y llave | En curso | [10-inscripciones-sorteo-y-llave.md](./registros-de-decisiones/10-inscripciones-sorteo-y-llave.md) |
 | 11 | Partidos | Pendiente | Se creará al comenzar |
 | 12 | Consulta para usuarios | Pendiente | Se creará al comenzar |
 | 13 | Pronósticos y participación | Pendiente | Se creará al comenzar |

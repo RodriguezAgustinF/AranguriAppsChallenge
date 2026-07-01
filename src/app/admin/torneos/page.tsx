@@ -1,6 +1,7 @@
 import { deleteTournament } from "@/actions/tournaments";
 import { TournamentForm } from "@/components/tournaments/tournament-form";
 import { createClient } from "@/lib/supabase/server";
+import Link from "next/link";
 
 export default async function TournamentsPage() {
   const supabase = await createClient();
@@ -26,6 +27,9 @@ export default async function TournamentsPage() {
                       {tournament.team_count} equipos ·{" "}
                       {new Date(tournament.starts_at).toLocaleString("es-AR")}
                     </span>
+                    <Link className="inline-link" href={`/admin/torneos/${tournament.id}`}>
+                      Gestionar equipos
+                    </Link>
                   </div>
                   <form action={deleteTournament}>
                     <input name="id" type="hidden" value={tournament.id} />

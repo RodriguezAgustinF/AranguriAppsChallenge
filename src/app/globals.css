@@ -302,6 +302,11 @@ h2 {
   color: var(--primary);
   margin: 0;
 }
+.inline-link {
+  color: var(--primary);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
 
 @media (max-width: 48rem) {
   .management-grid {
