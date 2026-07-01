@@ -1,14 +1,9 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 
 import { scheduleMatch, type MatchScheduleState } from "@/actions/matches";
-
-function toLocalInput(value?: string | null) {
-  if (!value) return "";
-  const date = new Date(value);
-  return new Date(date.getTime() - date.getTimezoneOffset() * 60_000).toISOString().slice(0, 16);
-}
+import { localDateTimeToIso, toLocalDateTimeInput } from "@/lib/date-time";
 
 export function MatchScheduleForm({
   matchId,
@@ -22,6 +17,7 @@ export function MatchScheduleForm({
   tournamentStartsAt: string;
 }) {
   const [state, formAction, pending] = useActionState(scheduleMatch, {} as MatchScheduleState);
+  const [scheduledAt, setScheduledAt] = useState(startsAt ?? "");
   const minimum =
     new Date(tournamentStartsAt) > new Date() ? tournamentStartsAt : new Date().toISOString();
 
@@ -29,11 +25,12 @@ export function MatchScheduleForm({
     <form action={formAction} className="schedule-form">
       <input name="matchId" type="hidden" value={matchId} />
       <input name="tournamentId" type="hidden" value={tournamentId} />
+      <input name="startsAt" readOnly type="hidden" value={scheduledAt} />
       <input
         aria-label="Fecha y hora del partido"
-        defaultValue={toLocalInput(startsAt)}
-        min={toLocalInput(minimum)}
-        name="startsAt"
+        defaultValue={toLocalDateTimeInput(startsAt)}
+        min={toLocalDateTimeInput(minimum)}
+        onChange={(event) => setScheduledAt(localDateTimeToIso(event.target.value))}
         required
         type="datetime-local"
       />

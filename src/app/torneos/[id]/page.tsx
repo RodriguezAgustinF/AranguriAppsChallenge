@@ -102,7 +102,9 @@ export default async function PublicTournamentDetail({
                             />
                           ) : null}
                           <span>{home?.name}</span>
-                          <strong>{match.result_published_at ? match.home_score : "-"}</strong>
+                          {home?.id ? (
+                            <strong>{match.result_published_at ? match.home_score : "-"}</strong>
+                          ) : null}
                         </div>
                         <div className="public-team-row">
                           {away?.logo_path ? (
@@ -114,7 +116,9 @@ export default async function PublicTournamentDetail({
                             />
                           ) : null}
                           <span>{away?.name}</span>
-                          <strong>{match.result_published_at ? match.away_score : "-"}</strong>
+                          {away?.id ? (
+                            <strong>{match.result_published_at ? match.away_score : "-"}</strong>
+                          ) : null}
                         </div>
                         <footer>
                           {penaltyWinner
