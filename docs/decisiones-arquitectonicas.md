@@ -306,3 +306,24 @@ Implementar `publish_match_result` y `generate_bracket` como funciones PostgreSQ
 
 ---
 
+### ADR-008: Imágenes de Equipos en Supabase Storage
+
+**Decisión**
+
+Almacenar los escudos o banderas de equipos en un bucket público `team-logos` de Supabase Storage. PostgreSQL conservará únicamente la ruta del objeto en `teams.logo_path`.
+
+**Ventajas**
+
+* Evita guardar datos binarios dentro de PostgreSQL.
+* Mantiene las rutas independientes de las URLs de desarrollo y producción.
+* Permite mostrar imágenes en pantallas públicas sin generar URLs firmadas.
+* Centraliza archivos, límites y tipos MIME dentro de la infraestructura ya elegida.
+
+**Desventajas**
+
+* Requiere políticas RLS adicionales sobre `storage.objects`.
+* Las operaciones de base de datos y Storage no comparten una única transacción, por lo que los servicios deberán limpiar archivos si una operación posterior falla.
+* El bucket público permite acceder a una imagen conociendo su URL, una concesión aceptable para recursos visuales no sensibles.
+
+---
+

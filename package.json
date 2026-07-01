@@ -1,5 +1,5 @@
 {
-  "name": "football-prediction-app",
+  "name": "football-tournament-manager",
   "version": "0.1.0",
   "private": true,
   "packageManager": "npm@11.16.0",
@@ -16,9 +16,20 @@
     "typecheck": "tsc --noEmit",
     "format": "prettier . --write --ignore-unknown",
     "format:check": "prettier . --check --ignore-unknown",
+    "db:start": "supabase start",
+    "db:stop": "supabase stop",
+    "db:reset": "supabase db reset",
+    "db:lint": "supabase db lint --local",
+    "db:test": "supabase test db",
+    "db:test:delivery": "supabase test db supabase/tests/admin_delivery_flow_test.sql",
+    "db:migration:new": "supabase migration new",
+    "db:types": "node scripts/generate-database-types.mjs --linked",
+    "db:types:local": "node scripts/generate-database-types.mjs --local",
     "check": "npm run lint && npm run typecheck && npm run format:check && npm run build"
   },
   "dependencies": {
+    "@supabase/ssr": "0.12.0",
+    "@supabase/supabase-js": "2.108.2",
     "next": "16.2.9",
     "react": "19.2.7",
     "react-dom": "19.2.7"
@@ -32,6 +43,7 @@
     "eslint-config-next": "16.2.9",
     "eslint-config-prettier": "10.1.8",
     "prettier": "3.9.3",
+    "supabase": "2.108.0",
     "tailwindcss": "4.3.2",
     "typescript": "6.0.3"
   },
