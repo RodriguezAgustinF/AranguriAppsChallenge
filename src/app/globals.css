@@ -997,10 +997,6 @@ h3 {
   color: #a8e4c1;
 }
 
-.login-intro h1 {
-  max-width: 9ch;
-}
-
 .login-intro > p:last-child {
   color: rgb(255 255 255 / 72%);
   line-height: 1.7;
