@@ -15,9 +15,15 @@ export async function scheduleMatch(
   await requireAdmin();
   const matchId = String(formData.get("matchId") ?? "");
   const tournamentId = String(formData.get("tournamentId") ?? "");
-  const startsAt = new Date(String(formData.get("startsAt") ?? ""));
+  const startsAtValue = String(formData.get("startsAt") ?? "");
+  const startsAt = new Date(startsAtValue);
 
-  if (!matchId || !tournamentId || Number.isNaN(startsAt.valueOf())) {
+  if (
+    !matchId ||
+    !tournamentId ||
+    !/([zZ]|[+-]\d{2}:\d{2})$/.test(startsAtValue) ||
+    Number.isNaN(startsAt.valueOf())
+  ) {
     return { message: "Ingresá una fecha y hora válidas." };
   }
   if (startsAt <= new Date()) {

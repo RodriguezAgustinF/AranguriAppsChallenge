@@ -1,7 +1,8 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { createTournament, updateTournament, type TournamentState } from "@/actions/tournaments";
+import { localDateTimeToIso, toLocalDateTimeInput } from "@/lib/date-time";
 
 type Tournament = {
   description: string | null;
@@ -10,14 +11,14 @@ type Tournament = {
   starts_at: string;
   team_count: number;
 };
-const localDate = (value?: string) => (value ? new Date(value).toISOString().slice(0, 16) : "");
-
 export function TournamentForm({ tournament }: { tournament?: Tournament }) {
   const action = tournament ? updateTournament : createTournament;
   const [state, formAction, pending] = useActionState(action, {} as TournamentState);
+  const [startsAt, setStartsAt] = useState(tournament?.starts_at ?? "");
   return (
     <form action={formAction} className="entity-form">
       {tournament ? <input name="id" type="hidden" value={tournament.id} /> : null}
+      <input name="startsAt" readOnly type="hidden" value={startsAt} />
       <div className="field-group">
         <label>Nombre</label>
         <input name="name" defaultValue={tournament?.name} required maxLength={100} />
@@ -37,9 +38,9 @@ export function TournamentForm({ tournament }: { tournament?: Tournament }) {
       <div className="field-group">
         <label>Inicio</label>
         <input
-          name="startsAt"
           type="datetime-local"
-          defaultValue={localDate(tournament?.starts_at)}
+          defaultValue={toLocalDateTimeInput(tournament?.starts_at)}
+          onChange={(event) => setStartsAt(localDateTimeToIso(event.target.value))}
           required
         />
       </div>
