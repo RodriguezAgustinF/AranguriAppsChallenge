@@ -18,3 +18,11 @@
 - `bracket_generated_at` se establece al final. Cualquier error revierte posiciones, fases, partidos y marca de generación en conjunto.
 - pgTAP verificó llaves de 4, 8, 16 y 32 equipos, sus 2, 3, 4 y 5 fases, y sus 3, 7, 15 y 31 partidos respectivamente.
 - También se rechazaron un segundo sorteo y un torneo con cupo incompleto.
+
+## 2026-06-30 — Programación de partidos
+
+- La pantalla del torneo agrupa los encuentros por fase y permite programar también rondas cuyos participantes todavía dependen de ganadores anteriores.
+- Cada partido conserva únicamente su fecha y hora de inicio; no se estima una duración ni una finalización.
+- La Server Action valida sesión `ADMIN`, identificadores y fecha futura antes de actualizar un único encuentro.
+- PostgreSQL exige que el horario sea futuro, no anterior al inicio del torneo y que un partido iniciado no pueda reprogramarse.
+- El permiso SQL se limita a `matches.starts_at`: ni siquiera una sesión `ADMIN` puede usar esta operación directa para escribir marcadores o participantes.

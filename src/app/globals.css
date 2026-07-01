@@ -311,6 +311,35 @@ h2 {
   margin-top: 2rem;
   max-width: none;
 }
+.match-schedule-section,
+.stage-list,
+.match-list {
+  display: grid;
+  gap: 1rem;
+}
+.match-schedule-section {
+  margin-top: 2rem;
+}
+.stage-panel {
+  max-width: none;
+}
+.match-schedule-card {
+  align-items: center;
+  border-top: 1px solid var(--border);
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: 7rem minmax(14rem, 1fr) minmax(18rem, 1fr);
+  padding-top: 1rem;
+}
+.schedule-form {
+  align-items: center;
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: minmax(12rem, 1fr) auto;
+}
+.schedule-form span {
+  grid-column: 1 / -1;
+}
 
 @media (max-width: 48rem) {
   .management-grid {
@@ -325,5 +354,8 @@ h2 {
   .admin-session {
     justify-content: space-between;
     width: 100%;
+  }
+  .match-schedule-card {
+    grid-template-columns: 1fr;
   }
 }

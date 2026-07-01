@@ -1,14 +1,35 @@
 import { notFound } from "next/navigation";
 import { enrollTeam, generateBracket, removeEnrollment } from "@/actions/enrollments";
+import { MatchScheduleForm } from "@/components/matches/match-schedule-form";
 import { createClient } from "@/lib/supabase/server";
+
+const stageNames = {
+  ROUND_OF_32: "Dieciseisavos de final",
+  ROUND_OF_16: "Octavos de final",
+  QUARTER_FINAL: "Cuartos de final",
+  SEMI_FINAL: "Semifinales",
+  FINAL: "Final",
+} as const;
 
 export default async function TournamentDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const supabase = await createClient();
-  const [{ data: tournament }, { data: teams }, { data: enrollments }] = await Promise.all([
+  const [
+    { data: tournament },
+    { data: teams },
+    { data: enrollments },
+    { data: stages },
+    { data: matches },
+  ] = await Promise.all([
     supabase.from("tournaments").select("*").eq("id", id).maybeSingle(),
     supabase.from("teams").select("id,name,abbreviation").order("name"),
     supabase.from("tournament_teams").select("id,team_id").eq("tournament_id", id),
+    supabase
+      .from("stages")
+      .select("id,type,stage_order")
+      .eq("tournament_id", id)
+      .order("stage_order"),
+    supabase.from("matches").select("*").eq("tournament_id", id).order("bracket_position"),
   ]);
   if (!tournament) notFound();
   const enrolledIds = new Set(enrollments?.map((item) => item.team_id));
@@ -19,6 +40,17 @@ export default async function TournamentDetail({ params }: { params: Promise<{ i
       team: teams?.find((team) => team.id === item.team_id),
     })) ?? [];
   const remaining = tournament.team_count - enrolled.length;
+  const teamNames = new Map(teams?.map((team) => [team.id, team.name]));
+  const stageById = new Map(stages?.map((stage) => [stage.id, stage]));
+  const matchById = new Map(matches?.map((match) => [match.id, match]));
+  const participantName = (teamId: string | null, sourceId: string | null) => {
+    if (teamId) return teamNames.get(teamId) ?? "Equipo";
+    const source = sourceId ? matchById.get(sourceId) : null;
+    const sourceStage = source ? stageById.get(source.stage_id) : null;
+    return source && sourceStage
+      ? `Ganador: ${stageNames[sourceStage.type]} ${source.bracket_position}`
+      : "Por definir";
+  };
   return (
     <main className="content-page">
       <p className="eyebrow">Inscripciones</p>
@@ -81,6 +113,41 @@ export default async function TournamentDetail({ params }: { params: Promise<{ i
           </button>
         </form>
       </section>
+      {tournament.bracket_generated_at ? (
+        <section className="match-schedule-section">
+          <h2>Programación de partidos</h2>
+          <p className="muted-text">
+            Podés definir todos los horarios desde el inicio del torneo y reprogramarlos mientras no
+            hayan comenzado.
+          </p>
+          <div className="stage-list">
+            {stages?.map((stage) => (
+              <section className="panel stage-panel" key={stage.id}>
+                <h3>{stageNames[stage.type]}</h3>
+                <div className="match-list">
+                  {matches
+                    ?.filter((match) => match.stage_id === stage.id)
+                    .map((match) => (
+                      <article className="match-schedule-card" key={match.id}>
+                        <strong>Partido {match.bracket_position}</strong>
+                        <span>
+                          {participantName(match.home_team_id, match.home_source_match_id)} vs.{" "}
+                          {participantName(match.away_team_id, match.away_source_match_id)}
+                        </span>
+                        <MatchScheduleForm
+                          matchId={match.id}
+                          startsAt={match.starts_at}
+                          tournamentId={id}
+                          tournamentStartsAt={tournament.starts_at}
+                        />
+                      </article>
+                    ))}
+                </div>
+              </section>
+            ))}
+          </div>
+        </section>
+      ) : null}
     </main>
   );
 }

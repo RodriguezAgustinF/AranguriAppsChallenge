@@ -14,7 +14,7 @@ Permitir que un administrador prepare y ejecute un torneo de eliminación direct
 - [x] Crear, consultar, editar y eliminar torneos antes de su inicio.
 - [x] Inscribir y quitar equipos antes de generar la llave.
 - [x] Generar una única llave aleatoria y completa.
-- [ ] Programar los partidos generados.
+- [x] Programar los partidos generados.
 - [ ] Publicar resultados oficiales definitivos, incluyendo penales.
 - [ ] Avanzar automáticamente al ganador hasta obtener un campeón.
 - [ ] Mostrar una vista pública básica de torneos, partidos y llave.
