@@ -24,7 +24,7 @@ export default async function TeamsPage() {
                 .data.publicUrl;
               return (
                 <article className="entity-card" key={team.id}>
-                  <div className="entity-row">
+                  <div className="entity-row team-entity-row">
                     <div
                       className="team-logo"
                       aria-label={`Imagen de ${team.name}`}
