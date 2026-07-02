@@ -30,3 +30,9 @@
 - La interfaz se presenta como **Gestor de Torneos** y no como Prode porque pronósticos, participación y ranking no integran la entrega actual.
 - La evolución hacia Prode se conserva en alcance, arquitectura y backlog; no se eliminan tablas ni reglas ya preparadas para esa etapa.
 - Metadatos, encabezados, pie y nombre técnico del paquete reflejan la funcionalidad realmente disponible hoy.
+
+## 2026-07-01 — Ajuste de accesos administrativos
+
+- Se conservó la estructura original de las tarjetas de Equipos y Torneos y se corrigió únicamente su jerarquía visual.
+- El número deja de heredar el margen editorial de 52 px y se presenta como una etiqueta compacta; título, descripción y espaciado mantienen una lectura continua.
+- Se agregó foco visible para teclado y un fondo sutil, evitando incorporar iconos o elementos decorativos que compitan con el contenido.
