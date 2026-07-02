@@ -86,6 +86,15 @@ h3 {
   min-height: 100vh;
 }
 
+.public-shell {
+  display: flex;
+  flex-direction: column;
+}
+
+.public-shell > main {
+  flex: 1;
+}
+
 .site-container,
 .site-header-inner,
 .site-footer-inner,
@@ -672,6 +681,11 @@ h3 {
   padding: 9px 12px;
 }
 
+.public-team-row-pending {
+  grid-template-columns: minmax(0, 1fr);
+  white-space: nowrap;
+}
+
 .public-team-row + .public-team-row {
   border-top: 1px solid var(--border);
 }
@@ -722,10 +736,16 @@ h3 {
 }
 
 .navigation-card {
+  background: linear-gradient(180deg, #fff, #f8fbf9);
   display: grid;
-  min-height: 230px;
+  gap: 14px;
+  grid-template-rows: auto auto 1fr;
+  min-height: 205px;
   padding: 32px;
-  transition: 160ms ease;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
 }
 
 .navigation-card:hover {
@@ -735,13 +755,31 @@ h3 {
 }
 
 .navigation-card strong {
-  font-size: 1.5rem;
+  color: var(--green-dark);
+  font-size: clamp(1.55rem, 2vw, 1.9rem);
+  letter-spacing: -0.04em;
 }
 
 .navigation-card > span:last-child {
   align-self: end;
   color: var(--muted);
   line-height: 1.6;
+  max-width: 42ch;
+}
+
+.navigation-card .navigation-number {
+  background: var(--green-soft);
+  border-radius: 999px;
+  color: var(--green-dark) !important;
+  justify-self: start;
+  margin-bottom: 6px;
+  padding: 6px 9px;
+}
+
+.navigation-card:focus-visible {
+  border-color: var(--green);
+  box-shadow: 0 0 0 4px var(--green-soft);
+  outline: none;
 }
 
 .management-grid {
@@ -995,6 +1033,10 @@ h3 {
 
 .login-intro .eyebrow {
   color: #a8e4c1;
+}
+
+.login-intro h1 {
+  max-width: 9ch;
 }
 
 .login-intro > p:last-child {

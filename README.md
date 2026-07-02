@@ -40,6 +40,31 @@ Las cuentas administradoras no se registran desde la aplicación: deben crearse 
 - Supabase Auth, PostgreSQL, Row Level Security y Storage.
 - Vercel para el despliegue de la aplicación.
 
+## Arquitectura y decisiones técnicas
+
+El proyecto utiliza una arquitectura full stack en una única base de código. Next.js resuelve la interfaz, el renderizado y las operaciones del servidor mediante App Router y Server Actions; Supabase proporciona autenticación, PostgreSQL y almacenamiento de imágenes. Esta combinación evita mantener una API y una infraestructura separadas, permite avanzar rápido y conserva una división clara entre presentación, lógica del servidor y persistencia.
+
+```text
+Navegador → Next.js (páginas y Server Actions) → Supabase (Auth, PostgreSQL y Storage)
+```
+
+Las Server Actions validan la sesión y el rol antes de ejecutar operaciones administrativas. Las reglas críticas también se protegen en PostgreSQL mediante restricciones, políticas RLS y funciones transaccionales: el cliente no puede modificar la estructura de una llave generada, alterar un resultado oficial ni avanzar manualmente un ganador. PostgreSQL es así la fuente de verdad, incluso si una solicitud intenta evitar las validaciones de la interfaz.
+
+Se eligió eliminación directa con capacidades de 4, 8, 16 o 32 equipos porque permite generar un árbol completo sin partidos libres. Next.js y Vercel simplifican el despliegue, mientras que Supabase ofrece las herramientas utilizadas habitualmente por AranguriApps y reduce el costo operativo del proyecto. Las decisiones detalladas se encuentran en [Arquitectura](./docs/arquitectura.md), [Datos y seguridad](./docs/datos-y-seguridad.md) y [Registro de decisiones](./docs/registro-de-decisiones.md).
+
+## Uso de inteligencia artificial
+
+Se utilizó **OpenAI Codex** como asistente de desarrollo durante todo el challenge. La herramienta ayudó a:
+
+- transformar el alcance inicial en una arquitectura y un backlog incremental;
+- implementar componentes, Server Actions, migraciones y políticas de seguridad;
+- proponer casos límite para llaves, fechas, penales y resultados definitivos;
+- generar y ejecutar pruebas de base de datos;
+- revisar consistencia, experiencia visual y documentación;
+- mantener commits pequeños y separar el trabajo mediante ramas y pull requests.
+
+La IA no tomó decisiones de producto de forma autónoma ni se utilizó como un mecanismo de copia y pegado sin revisión. Cada propuesta fue contrastada con el alcance, inspeccionada en el código y verificada mediante TypeScript, ESLint, Prettier, builds de producción, pruebas SQL y recorridos manuales. Cuando una solución visual o técnica no produjo el resultado esperado, se revirtió desde Git y se reemplazó por una alternativa más simple.
+
 ## Ejecución local
 
 ### Requisitos
