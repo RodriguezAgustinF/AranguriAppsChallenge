@@ -92,7 +92,9 @@ export default async function PublicTournamentDetail({
                       : null;
                     return (
                       <article className="public-match-card" key={match.id}>
-                        <div className="public-team-row">
+                        <div
+                          className={`public-team-row${home?.id ? "" : " public-team-row-pending"}`}
+                        >
                           {home?.logo_path ? (
                             <span
                               className="mini-team-logo"
@@ -106,7 +108,9 @@ export default async function PublicTournamentDetail({
                             <strong>{match.result_published_at ? match.home_score : "-"}</strong>
                           ) : null}
                         </div>
-                        <div className="public-team-row">
+                        <div
+                          className={`public-team-row${away?.id ? "" : " public-team-row-pending"}`}
+                        >
                           {away?.logo_path ? (
                             <span
                               className="mini-team-logo"

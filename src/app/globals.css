@@ -86,6 +86,15 @@ h3 {
   min-height: 100vh;
 }
 
+.public-shell {
+  display: flex;
+  flex-direction: column;
+}
+
+.public-shell > main {
+  flex: 1;
+}
+
 .site-container,
 .site-header-inner,
 .site-footer-inner,
@@ -672,6 +681,11 @@ h3 {
   padding: 9px 12px;
 }
 
+.public-team-row-pending {
+  grid-template-columns: minmax(0, 1fr);
+  white-space: nowrap;
+}
+
 .public-team-row + .public-team-row {
   border-top: 1px solid var(--border);
 }
@@ -995,6 +1009,10 @@ h3 {
 
 .login-intro .eyebrow {
   color: #a8e4c1;
+}
+
+.login-intro h1 {
+  max-width: 9ch;
 }
 
 .login-intro > p:last-child {
