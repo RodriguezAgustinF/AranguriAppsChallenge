@@ -85,7 +85,7 @@ export default async function TournamentDetail({ params }: { params: Promise<{ i
           <h2>Participantes</h2>
           <div className="entity-list">
             {enrolled.map((item) => (
-              <article className="entity-row" key={item.id}>
+              <article className="entity-row admin-tournament-id-border" key={item.id}>
                 <div>
                   <strong>{item.team?.name}</strong>
                   <span>{item.team?.abbreviation}</span>

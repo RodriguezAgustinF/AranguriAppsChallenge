@@ -829,6 +829,10 @@ h3 {
   padding: 16px 18px;
 }
 
+.admin-tournament-id-border {
+  border: 1px solid var(--border);
+}
+
 .team-entity-row {
   grid-template-columns: 58px minmax(0, 1fr) auto;
 }
