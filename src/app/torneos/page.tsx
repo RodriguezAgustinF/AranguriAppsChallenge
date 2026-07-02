@@ -1,12 +1,8 @@
 import Link from "next/link";
 
+import { TournamentStatusBadge } from "@/components/tournaments/tournament-status-badge";
+import { formatDateTime24Hour } from "@/lib/date-time";
 import { createClient } from "@/lib/supabase/server";
-
-const statusNames: Record<string, string> = {
-  FINISHED: "Finalizado",
-  IN_PROGRESS: "En juego",
-  UPCOMING: "Próximamente",
-};
 
 export default async function PublicTournamentsPage() {
   const supabase = await createClient();
@@ -32,16 +28,18 @@ export default async function PublicTournamentsPage() {
               key={tournament.id}
             >
               <div className="card-heading">
-                <span className={`status-badge status-${status.toLowerCase()}`}>
-                  {statusNames[status] ?? status}
-                </span>
+                <TournamentStatusBadge
+                  bracketGeneratedAt={tournament.bracket_generated_at}
+                  initialStatus={status}
+                  startsAt={tournament.starts_at}
+                />
                 <span>{tournament.team_count} equipos</span>
               </div>
               <h2>{tournament.name}</h2>
               {tournament.description ? <p>{tournament.description}</p> : null}
               {tournament.starts_at ? (
                 <time dateTime={tournament.starts_at}>
-                  Comienza: {new Date(tournament.starts_at).toLocaleString("es-AR")}
+                  Comienza: {formatDateTime24Hour(tournament.starts_at)}
                 </time>
               ) : null}
               <strong className="card-link">Ver torneo →</strong>

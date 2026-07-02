@@ -1,12 +1,13 @@
 begin;
-select plan(5);
+select plan(6);
 
 insert into public.tournaments (id, name, team_count, starts_at, ends_at)
 values
   ('d0000000-0000-0000-0000-000000000001', 'Upcoming', 4, now() + interval '2 days', now() + interval '3 days'),
   ('d0000000-0000-0000-0000-000000000002', 'In progress', 4, now() + interval '2 days', now() + interval '3 days'),
   ('d0000000-0000-0000-0000-000000000003', 'Overdue', 4, now() + interval '2 days', now() + interval '3 days'),
-  ('d0000000-0000-0000-0000-000000000004', 'Finished', 4, now() + interval '2 days', now() + interval '3 days');
+  ('d0000000-0000-0000-0000-000000000004', 'Finished', 4, now() + interval '2 days', now() + interval '3 days'),
+  ('d0000000-0000-0000-0000-000000000005', 'Started without bracket', 4, now() + interval '2 days', now() + interval '3 days');
 
 insert into public.teams (id, name, abbreviation, logo_path)
 values
@@ -43,14 +44,23 @@ set starts_at = case id
 where id in (
   'd0000000-0000-0000-0000-000000000002',
   'd0000000-0000-0000-0000-000000000003',
-  'd0000000-0000-0000-0000-000000000004'
+  'd0000000-0000-0000-0000-000000000004',
+  'd0000000-0000-0000-0000-000000000005'
 );
 alter table public.tournaments enable trigger validate_tournament_dates_before_write;
+
+update public.tournaments
+set bracket_generated_at = now()
+where id in (
+  'd0000000-0000-0000-0000-000000000002',
+  'd0000000-0000-0000-0000-000000000003'
+);
 
 select is((select status from public.tournament_overview where id = 'd0000000-0000-0000-0000-000000000001'), 'UPCOMING', 'future tournament is upcoming');
 select is((select status from public.tournament_overview where id = 'd0000000-0000-0000-0000-000000000002'), 'IN_PROGRESS', 'started tournament is in progress');
 select is((select status from public.tournament_overview where id = 'd0000000-0000-0000-0000-000000000003'), 'IN_PROGRESS', 'overdue tournament remains in progress');
 select is((select status from public.tournament_overview where id = 'd0000000-0000-0000-0000-000000000004'), 'FINISHED', 'final result finishes the tournament');
+select is((select status from public.tournament_overview where id = 'd0000000-0000-0000-0000-000000000005'), 'UPCOMING', 'started tournament without a bracket remains upcoming');
 select is((select champion_team_id from public.tournament_overview where id = 'd0000000-0000-0000-0000-000000000004'), 'd1000000-0000-0000-0000-000000000001'::uuid, 'final result derives the champion');
 
 select * from finish();

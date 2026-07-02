@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { TournamentStatusBadge } from "@/components/tournaments/tournament-status-badge";
+import { formatDateTime24Hour } from "@/lib/date-time";
 import { createClient } from "@/lib/supabase/server";
 
 const stageNames = {
@@ -57,13 +59,11 @@ export default async function PublicTournamentDetail({
           <h1>{tournament.name}</h1>
           {tournament.description ? <p className="muted-text">{tournament.description}</p> : null}
         </div>
-        <span className={`status-badge status-${status.toLowerCase()}`}>
-          {status === "FINISHED"
-            ? "Finalizado"
-            : status === "IN_PROGRESS"
-              ? "En juego"
-              : "Próximamente"}
-        </span>
+        <TournamentStatusBadge
+          bracketGeneratedAt={tournament.bracket_generated_at}
+          initialStatus={status}
+          startsAt={tournament.starts_at}
+        />
       </div>
       {champion ? (
         <section className="champion-banner">
@@ -92,7 +92,9 @@ export default async function PublicTournamentDetail({
                       : null;
                     return (
                       <article className="public-match-card" key={match.id}>
-                        <div className="public-team-row">
+                        <div
+                          className={`public-team-row${home?.id ? "" : " public-team-row-pending"}`}
+                        >
                           {home?.logo_path ? (
                             <span
                               className="mini-team-logo"
@@ -102,9 +104,13 @@ export default async function PublicTournamentDetail({
                             />
                           ) : null}
                           <span>{home?.name}</span>
-                          <strong>{match.result_published_at ? match.home_score : "-"}</strong>
+                          {home?.id ? (
+                            <strong>{match.result_published_at ? match.home_score : "-"}</strong>
+                          ) : null}
                         </div>
-                        <div className="public-team-row">
+                        <div
+                          className={`public-team-row${away?.id ? "" : " public-team-row-pending"}`}
+                        >
                           {away?.logo_path ? (
                             <span
                               className="mini-team-logo"
@@ -114,13 +120,15 @@ export default async function PublicTournamentDetail({
                             />
                           ) : null}
                           <span>{away?.name}</span>
-                          <strong>{match.result_published_at ? match.away_score : "-"}</strong>
+                          {away?.id ? (
+                            <strong>{match.result_published_at ? match.away_score : "-"}</strong>
+                          ) : null}
                         </div>
                         <footer>
                           {penaltyWinner
                             ? `Ganó por penales: ${penaltyWinner.name}`
                             : match.starts_at
-                              ? new Date(match.starts_at).toLocaleString("es-AR")
+                              ? formatDateTime24Hour(match.starts_at)
                               : "Sin horario"}
                         </footer>
                       </article>

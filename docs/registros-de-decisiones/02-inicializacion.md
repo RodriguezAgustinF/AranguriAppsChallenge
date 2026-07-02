@@ -192,3 +192,9 @@ Este flujo agrega más ceremonia que GitHub Flow, pero fue elegido para practica
 - [Instalación de Prettier](https://prettier.io/docs/install)
 - [Configuración de Prettier](https://prettier.io/docs/configuration)
 - [Tailwind CSS 4](https://tailwindcss.com/blog/tailwindcss-v4)
+
+## 2026-07-01 — README orientado a la evaluación
+
+- El README resume la arquitectura full stack y justifica Next.js, Supabase, PostgreSQL y Vercel sin duplicar la documentación técnica extensa.
+- Se documenta de forma explícita el uso de OpenAI Codex para planificación, implementación, pruebas, revisión y documentación, tal como solicita el challenge.
+- Se aclara que las propuestas generadas fueron auditadas con controles automáticos, pruebas SQL, revisión manual y Git; la responsabilidad sobre decisiones y resultado final permaneció en el desarrollador.
