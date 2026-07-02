@@ -36,3 +36,9 @@
 - Se conservó la estructura original de las tarjetas de Equipos y Torneos y se corrigió únicamente su jerarquía visual.
 - El número deja de heredar el margen editorial de 52 px y se presenta como una etiqueta compacta; título, descripción y espaciado mantienen una lectura continua.
 - Se agregó foco visible para teclado y un fondo sutil, evitando incorporar iconos o elementos decorativos que compitan con el contenido.
+
+## 2026-07-01 — Página para recursos inexistentes
+
+- Se utiliza la convención estable `app/not-found.tsx` de Next.js 16 para responder a rutas inexistentes y llamadas explícitas a `notFound()`.
+- La página ofrece acciones para volver al inicio o consultar torneos y conserva la identidad visual sin realizar una redirección silenciosa.
+- La composición es autónoma para funcionar bajo el layout raíz y evita incluir encabezado o pie propios, que podrían duplicarse cuando un layout de sección permanece montado.
