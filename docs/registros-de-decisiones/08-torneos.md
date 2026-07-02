@@ -22,6 +22,13 @@ Implementada la primera versión funcional de alta, listado, edición y eliminac
 - Next.js registró `/admin/torneos` como ruta dinámica protegida.
 - Probar el flujo con la cuenta `ADMIN` de desarrollo.
 
+## 2026-07-01 — Reprogramación de torneos vencidos sin llave
+
+- Alcanzar `starts_at` no inicia por sí solo una competencia: también debe existir una llave generada.
+- Un torneo cuya fecha quedó en el pasado pero que no tiene llave puede reprogramarse a una nueva fecha futura o eliminarse.
+- Si la llave ya fue generada y se alcanzó el horario, la fecha permanece bloqueada para preservar partidos, participantes y resultados.
+- PostgreSQL mantiene la regla autoritativa y la Server Action comunica el mismo criterio al administrador.
+
 ## 2026-06-30 — Finalización derivada de la final
 
 - La fecha de finalización se retiró del formulario porque una llave no tiene duración predecible.

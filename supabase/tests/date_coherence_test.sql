@@ -1,5 +1,5 @@
 begin;
-select plan(8);
+select plan(10);
 
 select throws_ok(
   $$
@@ -52,6 +52,36 @@ select throws_ok($$update public.matches set starts_at = now() - interval '1 min
 select lives_ok($$update public.matches set starts_at = now() + interval '36 hours' where id = 'c3000000-0000-0000-0000-000000000001'$$, 'a match can be scheduled inside the tournament range');
 select lives_ok($$update public.tournaments set ends_at = null where id = 'c0000000-0000-0000-0000-000000000001'$$, 'the obsolete end can be removed');
 select throws_ok($$update public.tournaments set starts_at = now() + interval '2 days' where id = 'c0000000-0000-0000-0000-000000000001'$$, '23514', 'tournament start must not be after a scheduled match', 'tournament start cannot exclude a scheduled match');
+
+insert into public.tournaments (id, name, team_count, starts_at)
+values
+  ('c0000000-0000-0000-0000-000000000002', 'Overdue without bracket', 4, now() + interval '1 day'),
+  ('c0000000-0000-0000-0000-000000000003', 'Started with bracket', 4, now() + interval '1 day');
+
+update public.tournaments
+set bracket_generated_at = now()
+where id = 'c0000000-0000-0000-0000-000000000003';
+
+alter table public.tournaments disable trigger validate_tournament_dates_before_write;
+update public.tournaments
+set starts_at = now() - interval '1 hour'
+where id in (
+  'c0000000-0000-0000-0000-000000000002',
+  'c0000000-0000-0000-0000-000000000003'
+);
+alter table public.tournaments enable trigger validate_tournament_dates_before_write;
+
+select lives_ok(
+  $$update public.tournaments set starts_at = now() + interval '1 day' where id = 'c0000000-0000-0000-0000-000000000002'$$,
+  'an overdue tournament without a bracket can be rescheduled'
+);
+
+select throws_ok(
+  $$update public.tournaments set starts_at = now() + interval '1 day' where id = 'c0000000-0000-0000-0000-000000000003'$$,
+  '23514',
+  'the start of a started tournament cannot be changed',
+  'a started tournament with a bracket cannot be rescheduled'
+);
 
 select * from finish();
 rollback;
